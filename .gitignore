@@ -1,0 +1,6 @@
+ottercraft-forge/build/
+ottercraft-forge/run/
+ottercraft-forge/.idea/
+ottercraft-forge/.gradle/
+ottercraft-fabric/
+**/.DS_Store
