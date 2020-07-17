@@ -25,7 +25,7 @@ public final class Ottercraft {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.ENTITIES, Ottercraft.MODID);
     public static final RegistryObject<EntityType<OtterEntity>> OTTER = ENTITY_TYPES.register("otter", () ->
             EntityType.Builder.<OtterEntity>create(OtterEntity::new, EntityClassification.CREATURE)
-                    .size(EntityType.WOLF.getWidth(), EntityType.WOLF.getHeight())
+                    .size(0.5f, 0.5f)
                     .build(new ResourceLocation(Ottercraft.MODID, "otter").toString())
     );
 
@@ -44,6 +44,5 @@ public final class Ottercraft {
     @SubscribeEvent
     public static void setupClient(final FMLClientSetupEvent event) {
         RenderingRegistry.<OtterEntity>registerEntityRenderingHandler(OTTER.get(), OtterRenderer::new);
-        //RenderingRegistry.registerEntityRenderingHandler(EmpiresEntities.ELEPHANT.get(), ElephantEntityRenderer::new);
     }
 }

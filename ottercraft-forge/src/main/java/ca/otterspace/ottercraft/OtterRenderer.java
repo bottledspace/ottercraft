@@ -12,7 +12,7 @@ public class OtterRenderer extends MobRenderer<OtterEntity, OtterModel<OtterEnti
     }
 
     public OtterRenderer(EntityRendererManager renderManagerIn) {
-        super(renderManagerIn, new OtterModel<OtterEntity>(), 2.5F);
+        super(renderManagerIn, new OtterModel<OtterEntity>(), 1.0f);
     }
 
     @Override
