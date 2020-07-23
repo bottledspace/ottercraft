@@ -8,6 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT) class OtterModel<T extends OtterEntity> extends EntityModel<T> {
+    protected boolean smol = false;
     protected ModelRenderer armL;
     protected ModelRenderer armR;
     protected ModelRenderer chest;
@@ -95,20 +96,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
     }
     public void render(MatrixStack ms, IVertexBuilder b, int f, int g, float red, float green, float blue, float alpha) {
         ms.push();
-        ms.scale(0.5f, 0.5f, 0.5f);
-        ms.translate(0.0f,1.5f,0.0f);
+        if (this.smol) {
+            ms.scale(0.5f, 0.5f, 0.5f);
+            ms.translate(0.0f, 1.5f, 0.0f);
+        }
         this.armL.render(ms, b, f, g, red, green, blue, alpha);
         this.armR.render(ms, b, f, g, red, green, blue, alpha);
         this.chest.render(ms, b, f, g, red, green, blue, alpha);
-        //this.earL.render(ms, b, f, g, red, green, blue, alpha);
-        //this.earR.render(ms, b, f, g, red, green, blue, alpha);
         this.footBL.render(ms, b, f, g, red, green, blue, alpha);
         this.footL.render(ms, b, f, g, red, green, blue, alpha);
         this.footR.render(ms, b, f, g, red, green, blue, alpha);
         this.head.render(ms, b, f, g, red, green, blue, alpha);
         this.lowerLegBR.render(ms, b, f, g, red, green, blue, alpha);
         this.neck.render(ms, b, f, g, red, green, blue, alpha);
-        //this.nose.render(ms, b, f, g, red, green, blue, alpha);
         this.tail1.render(ms, b, f, g, red, green, blue, alpha);
         this.tail2.render(ms, b, f, g, red, green, blue, alpha);
         this.tail3.render(ms, b, f, g, red, green, blue, alpha);
@@ -206,62 +206,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
         this.chest.rotationPointX = Chest_rotpos[frame*6];
         this.chest.rotationPointY = 24-Chest_rotpos[frame*6+2];
         this.chest.rotationPointZ = Chest_rotpos[frame*6+1];
-        /*final float[] EarL_rotpos = new float[]{
-                4.78f,-28.19f,19.17f,0.02f,0.69f,0.01f,
-                4.78f,-27.83f,20.09f,0.00f,0.69f,0.00f,
-                4.78f,-27.28f,21.25f,-0.03f,0.69f,-0.02f,
-                4.78f,-26.60f,22.39f,-0.08f,0.69f,-0.05f,
-                4.78f,-25.94f,23.27f,-0.16f,0.68f,-0.10f,
-                4.78f,-25.78f,23.54f,-0.24f,0.68f,-0.15f,
-                4.78f,-26.20f,23.22f,-0.28f,0.67f,-0.18f,
-                4.78f,-26.75f,22.59f,-0.30f,0.67f,-0.19f,
-                4.78f,-27.16f,21.89f,-0.31f,0.67f,-0.20f,
-                4.78f,-27.25f,21.34f,-0.31f,0.67f,-0.20f,
-                4.78f,-27.60f,20.76f,-0.28f,0.67f,-0.18f,
-                4.78f,-28.33f,20.09f,-0.20f,0.68f,-0.13f,
-                4.78f,-28.76f,19.51f,-0.11f,0.69f,-0.07f,
-                4.78f,-28.66f,18.75f,-0.01f,0.69f,-0.00f,
-                4.78f,-28.34f,17.54f,0.08f,0.69f,0.05f,
-                4.78f,-28.19f,16.76f,0.11f,0.69f,0.07f,
-                4.78f,-28.16f,16.97f,0.10f,0.69f,0.07f,
-                4.78f,-28.23f,17.68f,0.07f,0.69f,0.05f,
-                4.78f,-28.30f,18.45f,0.04f,0.69f,0.02f,
-                4.78f,-28.33f,18.80f,0.02f,0.69f,0.01f,
-        };
-        this.earL.rotateAngleX   = EarL_rotpos[frame*6+3];
-        this.earL.rotateAngleY   = EarL_rotpos[frame*6+5];
-        this.earL.rotateAngleZ   = EarL_rotpos[frame*6+4];
-        this.earL.rotationPointX = EarL_rotpos[frame*6];
-        this.earL.rotationPointY = 24-EarL_rotpos[frame*6+2];
-        this.earL.rotationPointZ = EarL_rotpos[frame*6+1];*/
-        /*final float[] EarR_rotpos = new float[]{
-                -4.78f,-28.19f,19.17f,0.02f,-0.69f,-0.01f,
-                -4.78f,-27.83f,20.09f,0.00f,-0.69f,-0.00f,
-                -4.78f,-27.28f,21.25f,-0.03f,-0.69f,0.02f,
-                -4.78f,-26.60f,22.39f,-0.08f,-0.69f,0.05f,
-                -4.78f,-25.94f,23.27f,-0.16f,-0.68f,0.10f,
-                -4.78f,-25.78f,23.54f,-0.24f,-0.68f,0.15f,
-                -4.78f,-26.20f,23.22f,-0.28f,-0.67f,0.18f,
-                -4.78f,-26.75f,22.59f,-0.30f,-0.67f,0.19f,
-                -4.78f,-27.16f,21.89f,-0.31f,-0.67f,0.20f,
-                -4.78f,-27.25f,21.34f,-0.31f,-0.67f,0.20f,
-                -4.78f,-27.60f,20.76f,-0.28f,-0.67f,0.18f,
-                -4.78f,-28.33f,20.09f,-0.20f,-0.68f,0.13f,
-                -4.78f,-28.76f,19.51f,-0.11f,-0.69f,0.07f,
-                -4.78f,-28.66f,18.75f,-0.01f,-0.69f,0.00f,
-                -4.78f,-28.34f,17.54f,0.08f,-0.69f,-0.05f,
-                -4.78f,-28.19f,16.76f,0.11f,-0.69f,-0.07f,
-                -4.78f,-28.16f,16.97f,0.10f,-0.69f,-0.07f,
-                -4.78f,-28.23f,17.68f,0.07f,-0.69f,-0.05f,
-                -4.78f,-28.30f,18.45f,0.04f,-0.69f,-0.02f,
-                -4.78f,-28.33f,18.80f,0.02f,-0.69f,-0.01f,
-        };
-        this.earR.rotateAngleX   = EarR_rotpos[frame*6+3];
-        this.earR.rotateAngleY   = EarR_rotpos[frame*6+5];
-        this.earR.rotateAngleZ   = EarR_rotpos[frame*6+4];
-        this.earR.rotationPointX = EarR_rotpos[frame*6];
-        this.earR.rotationPointY = 24-EarR_rotpos[frame*6+2];
-        this.earR.rotationPointZ = EarR_rotpos[frame*6+1];*/
         final float[] FootBL_rotpos = new float[]{
                 7.81f,-0.57f,1.00f,0.21f,-0.07f,0.26f,
                 7.81f,0.80f,1.92f,0.19f,-0.06f,0.26f,
@@ -430,35 +374,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
         this.neck.rotationPointX = Neck_rotpos[frame*6];
         this.neck.rotationPointY = 24-Neck_rotpos[frame*6+2];
         this.neck.rotationPointZ = Neck_rotpos[frame*6+1];
-        /*final float[] Nose_rotpos = new float[]{
-                -0.00f,-35.61f,11.24f,0.25f,-0.00f,-0.00f,
-                -0.00f,-35.35f,12.25f,0.23f,-0.00f,-0.00f,
-                -0.00f,-34.98f,13.60f,0.21f,-0.00f,-0.00f,
-                -0.00f,-34.62f,15.06f,0.17f,-0.00f,-0.00f,
-                -0.00f,-34.39f,16.45f,0.11f,-0.00f,-0.00f,
-                -0.00f,-34.62f,17.23f,0.05f,-0.00f,-0.00f,
-                -0.00f,-35.25f,17.21f,0.01f,-0.00f,-0.00f,
-                -0.00f,-35.91f,16.75f,-0.01f,-0.00f,-0.00f,
-                -0.00f,-36.35f,16.12f,-0.01f,-0.00f,-0.00f,
-                -0.00f,-36.46f,15.57f,-0.01f,-0.00f,-0.00f,
-                -0.00f,-36.65f,14.75f,0.01f,-0.00f,-0.00f,
-                -0.00f,-36.99f,13.53f,0.07f,-0.00f,-0.00f,
-                -0.00f,-36.90f,12.32f,0.15f,-0.00f,-0.00f,
-                -0.00f,-36.22f,10.96f,0.23f,-0.00f,-0.00f,
-                -0.00f,-35.40f,9.29f,0.29f,-0.00f,-0.00f,
-                -0.00f,-35.01f,8.31f,0.32f,-0.00f,-0.00f,
-                -0.00f,-35.04f,8.56f,0.31f,-0.00f,-0.00f,
-                -0.00f,-35.30f,9.45f,0.29f,-0.00f,-0.00f,
-                -0.00f,-35.59f,10.40f,0.26f,-0.00f,-0.00f,
-                -0.00f,-35.72f,10.84f,0.25f,-0.00f,-0.00f,
-        };
-
-        this.nose.rotateAngleX   = Nose_rotpos[frame*6+3];
-        this.nose.rotateAngleY   = Nose_rotpos[frame*6+5];
-        this.nose.rotateAngleZ   = Nose_rotpos[frame*6+4];
-        this.nose.rotationPointX = Nose_rotpos[frame*6];
-        this.nose.rotationPointY = 24-Nose_rotpos[frame*6+2];
-        this.nose.rotationPointZ = Nose_rotpos[frame*6+1];*/
         final float[] Tail1_rotpos = new float[]{
                 0.00f,8.33f,12.30f,-1.16f,0.00f,-0.00f,
                 0.00f,8.88f,12.80f,-1.10f,0.00f,-0.00f,
@@ -1049,34 +964,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
         this.neck.rotationPointX = Neck_rotpos[frame*6];
         this.neck.rotationPointY = 24-Neck_rotpos[frame*6+2];
         this.neck.rotationPointZ = Neck_rotpos[frame*6+1];
-        /*final float[] Nose_rotpos = new float[]{
-                0.00f,-35.07f,13.94f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.07f,13.88f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.07f,13.83f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.07f,13.78f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.07f,13.73f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.69f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.64f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.59f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.53f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.47f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.53f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.59f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.65f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.71f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.09f,13.77f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.09f,13.83f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.88f,0.08f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.93f,0.08f,-0.00f,-0.00f,
-                0.00f,-35.08f,13.97f,0.09f,-0.00f,-0.00f,
-                0.00f,-35.07f,13.99f,0.09f,-0.00f,-0.00f,
-        };
-        this.nose.rotateAngleX   = Nose_rotpos[frame*6+3];
-        this.nose.rotateAngleY   = Nose_rotpos[frame*6+5];
-        this.nose.rotateAngleZ   = Nose_rotpos[frame*6+4];
-        this.nose.rotationPointX = Nose_rotpos[frame*6];
-        this.nose.rotationPointY = 24-Nose_rotpos[frame*6+2];
-        this.nose.rotationPointZ = Nose_rotpos[frame*6+1];*/
         final float[] Tail1_rotpos = new float[]{
                 0.00f,12.61f,10.77f,-0.71f,0.00f,-0.00f,
                 0.00f,12.61f,10.78f,-0.71f,0.00f,-0.00f,
@@ -1362,7 +1249,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
     public OtterModel() {
         this.init();
     }
-    @Override public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadrotateAngleY, float headrotateAngleX) {
+
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadrotateAngleY, float headrotateAngleX) {
+        this.smol = (entityIn.getOtterSubspecies() == 0);
         if (entityIn.animation == OtterEntity.Animation.RUNNING)
             this.poseRun(entityIn.frame);
         else {

@@ -57,5 +57,8 @@ public final class Ottercraft {
         ForgeRegistries.BIOMES.getValue(new ResourceLocation("minecraft", "river"))
                 .getSpawns(EntityClassification.CREATURE)
                 .add(new Biome.SpawnListEntry(OTTER.get(), 100, 3, 5));
+        ForgeRegistries.BIOMES.getValue(new ResourceLocation("minecraft", "swamp"))
+                .getSpawns(EntityClassification.CREATURE)
+                .add(new Biome.SpawnListEntry(OTTER.get(), 100, 3, 5));
     }
 }
