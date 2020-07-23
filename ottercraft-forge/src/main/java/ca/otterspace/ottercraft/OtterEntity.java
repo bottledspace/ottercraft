@@ -5,6 +5,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.world.World;
 
 public class OtterEntity extends WolfEntity {
+    public final static String NAME = "otter";
     public enum Animation {
         IDLE,
         RUNNING
