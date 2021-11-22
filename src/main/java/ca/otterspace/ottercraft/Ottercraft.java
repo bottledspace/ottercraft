@@ -80,10 +80,10 @@ public class Ottercraft {
             return;
         else if (biome.getBiomeCategory() == Biome.Category.RIVER)
             event.getSpawns().getSpawner(EntityClassification.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 10, 3, 5));
+                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
         else if (biome.getBiomeCategory() == Biome.Category.SWAMP)
             event.getSpawns().getSpawner(EntityClassification.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 10, 3, 5));
+                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
     }
 
     public static EntityType<EntityOtter> OTTER = new EntityType<>(EntityOtter::new, EntityClassification.CREATURE, true,
@@ -93,7 +93,6 @@ public class Ottercraft {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         IForgeRegistry<EntityType<?>> registry = event.getRegistry();
-
         OTTER.setRegistryName(MODID, "otter");
         registry.register(OTTER);
     }
