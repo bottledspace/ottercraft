@@ -227,7 +227,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.run", true));
         else if (this.isInSittingPose())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.sit", true));
-        else if (this.isBegging())
+        else if (this.isBegging() || this.isPassenger())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.beg", true));
         else
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.idle", true));
