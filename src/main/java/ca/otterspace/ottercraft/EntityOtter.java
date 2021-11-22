@@ -173,6 +173,10 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
         return Ottercraft.OTTER_ANGRY;
     }
 
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
 
     protected boolean isLandNavigator;
     protected int swimTimer = 0;
