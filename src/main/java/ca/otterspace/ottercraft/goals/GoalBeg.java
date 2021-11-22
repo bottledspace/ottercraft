@@ -24,7 +24,7 @@ public class GoalBeg extends Goal {
         this.lookDistance = p_i1617_2_;
         this.begTargeting = (new EntityPredicate()).range((double)p_i1617_2_)
                 .allowInvulnerable().allowSameTeam().allowNonAttackable();
-        this.setFlags(EnumSet.of(Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     public boolean canUse() {
@@ -49,12 +49,19 @@ public class GoalBeg extends Goal {
 
     public void stop() {
         this.otter.setBegging(false);
+        this.otter.getNavigation().stop();
         this.player = null;
     }
 
     public void tick() {
         this.otter.getLookControl().setLookAt(this.player.getX(), this.player.getEyeY(), this.player.getZ(), 10.0F, (float)this.otter.getMaxHeadXRot());
-        --this.lookTime;
+
+        if (this.otter.distanceToSqr(this.player) < 6.25D) {
+            this.otter.getNavigation().stop();
+            --this.lookTime;
+        } else {
+            this.otter.getNavigation().moveTo(this.player, 1.0f);
+        }
     }
 
     private boolean playerHoldingInteresting(PlayerEntity p_75382_1_) {
