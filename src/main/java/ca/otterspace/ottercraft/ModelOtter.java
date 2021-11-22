@@ -1,6 +1,5 @@
 package ca.otterspace.ottercraft;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -51,6 +50,16 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F));
             head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F));
+
+            if (entity.isInWater()) {
+                IBone root = this.getAnimationProcessor().getBone("root");
+                double dx = entity.getDeltaMovement().x;
+                double dz = entity.getDeltaMovement().z;
+                float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
+                angle = (float) MathHelper.clamp(angle, -Math.PI/4.0, Math.PI/4.0);
+
+                root.setRotationX(angle + root.getRotationX());
+            }
         }
         float wagAmplitude;
         if (entity.isBegging())
