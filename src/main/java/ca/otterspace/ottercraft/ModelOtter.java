@@ -46,7 +46,7 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     @Override
     public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
-        if (!entity.isBegging()) {
+        if (!entity.isBegging() && !entity.isPassenger()) {
             IBone head = this.getAnimationProcessor().getBone("head");
             EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F));
@@ -61,5 +61,6 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             wagAmplitude = 0.05f;
         GeoBone bone = this.getModel(getModelLocation(entity)).getBone("tail").orElse(null);
         this.animateTail(bone, 0, MathHelper.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
+        bone.isHidden = entity.isPassenger();
     }
 }
