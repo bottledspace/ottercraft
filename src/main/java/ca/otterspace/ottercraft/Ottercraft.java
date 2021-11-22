@@ -3,6 +3,10 @@ package ca.otterspace.ottercraft;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
@@ -76,18 +80,20 @@ public class Ottercraft {
             return;
         else if (biome.getBiomeCategory() == Biome.Category.RIVER)
             event.getSpawns().getSpawner(EntityClassification.CREATURE)
-                 .add(new MobSpawnInfo.Spawners(OTTER, 10, 3, 5));
+                    .add(new MobSpawnInfo.Spawners(OTTER, 10, 3, 5));
         else if (biome.getBiomeCategory() == Biome.Category.SWAMP)
             event.getSpawns().getSpawner(EntityClassification.CREATURE)
                     .add(new MobSpawnInfo.Spawners(OTTER, 10, 3, 5));
     }
 
-    public static EntityType<EntityOtter> OTTER;
+    public static EntityType<EntityOtter> OTTER = new EntityType<>(EntityOtter::new, EntityClassification.CREATURE, true,
+            true, false, false, ImmutableSet.of(),
+            EntitySize.fixed(0.9f, 1.0f), 4, 1);
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         IForgeRegistry<EntityType<?>> registry = event.getRegistry();
-        OTTER = new EntityType<>(EntityOtter::new, EntityClassification.CREATURE, true, true, false, false, ImmutableSet.of(), EntitySize.fixed(0.9f, 1.0f), 4, 1);
+
         OTTER.setRegistryName(MODID, "otter");
         registry.register(OTTER);
     }
@@ -95,5 +101,17 @@ public class Ottercraft {
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
         event.put(OTTER, EntityOtter.createAttributes().build());
+    }
+
+    public static ItemGroup TAB = new ItemGroup(MODID) {
+        @Override
+        public ItemStack makeIcon() {
+            return null;
+        }
+    };
+
+    @SubscribeEvent
+    public static void registerItem(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(TAB)).setRegistryName("ottercraft:spawn_egg_otter"));
     }
 }
