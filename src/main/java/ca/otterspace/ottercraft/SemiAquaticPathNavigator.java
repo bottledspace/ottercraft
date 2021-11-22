@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.SwimmerPathNavigator;

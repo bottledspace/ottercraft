@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

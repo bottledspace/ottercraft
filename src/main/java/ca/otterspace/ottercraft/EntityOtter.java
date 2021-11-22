@@ -1,17 +1,14 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 
-import ca.otterspace.ottermod.goals.*;
+import ca.otterspace.ottercraft.goals.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.passive.*;
-import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -25,6 +22,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
@@ -78,6 +76,11 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
         this.entityData.define(BEGGING, false);
         this.entityData.define(COLLAR_COLOR, DyeColor.RED.getId());
         this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+    }
+
+    @Override
+    public Vector3d getLeashOffset() {
+        return new Vector3d(0.0D, (double)this.getBbHeight() * 0.5F, (double)(this.getBbWidth() * 0.4F));
     }
 
     @Override
@@ -137,7 +140,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity parent) {
-        return Ottermod.OTTER.create(world);
+        return Ottercraft.OTTER.create(world);
     }
 
     @Override
@@ -161,14 +164,15 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return Ottermod.OTTER_SQUEAK;
+        return Ottercraft.OTTER_SQUEAK;
     }
 
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return Ottermod.OTTER_ANGRY;
+        return Ottercraft.OTTER_ANGRY;
     }
+
 
     protected boolean isLandNavigator;
     protected int swimTimer = 0;
@@ -268,7 +272,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
             this.isLandNavigator = true;
         } else {
             this.navigation = new SemiAquaticPathNavigator(this, this.level);
-            this.moveControl = new SwimMovementController(this, 1.5f, 1.6f);
+            this.moveControl = new SwimMovementController(this, 2.5f, 1.6f);
             this.isLandNavigator = false;
         }
     }

@@ -1,12 +1,9 @@
-package ca.otterspace.ottermod.goals;
+package ca.otterspace.ottercraft.goals;
 
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.passive.DolphinEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 
 import java.util.EnumSet;
 

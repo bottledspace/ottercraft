@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod.goals;
+package ca.otterspace.ottercraft.goals;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -6,7 +6,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.DolphinEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.List;

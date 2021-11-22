@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.attributes.Attributes;

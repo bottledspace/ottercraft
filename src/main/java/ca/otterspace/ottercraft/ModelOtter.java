@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
@@ -10,20 +10,20 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     @Override
     public ResourceLocation getModelLocation(EntityOtter object) {
-        return new ResourceLocation("ottermod", "geo/otter.geo.json");
+        return new ResourceLocation(Ottercraft.MODID, "geo/otter.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityOtter object) {
         if (object.isTame())
-            return new ResourceLocation("ottermod", "textures/entity/otter_tame.png");
+            return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter_tame.png");
         else
-            return new ResourceLocation("ottermod", "textures/entity/otter.png");
+            return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter.png");
     }
 
     @Override
     public ResourceLocation getAnimationFileLocation(EntityOtter object) {
-        return new ResourceLocation("ottermod", "animations/otter.animation.json");
+        return new ResourceLocation(Ottercraft.MODID, "animations/otter.animation.json");
     }
 
     @Override

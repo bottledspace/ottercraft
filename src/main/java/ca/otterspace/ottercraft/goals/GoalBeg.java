@@ -1,6 +1,6 @@
-package ca.otterspace.ottermod.goals;
+package ca.otterspace.ottercraft.goals;
 
-import ca.otterspace.ottermod.EntityOtter;
+import ca.otterspace.ottercraft.EntityOtter;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;

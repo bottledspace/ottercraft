@@ -1,6 +1,6 @@
-package ca.otterspace.ottermod.goals;
+package ca.otterspace.ottercraft.goals;
 
-import ca.otterspace.ottermod.ISemiAquatic;
+import ca.otterspace.ottercraft.ISemiAquatic;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.tags.FluidTags;

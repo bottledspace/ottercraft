@@ -1,4 +1,4 @@
-package ca.otterspace.ottermod;
+package ca.otterspace.ottercraft;
 
 public interface ISemiAquatic {
     boolean shouldEnterWater();
