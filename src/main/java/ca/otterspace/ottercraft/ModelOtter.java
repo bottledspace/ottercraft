@@ -2,8 +2,10 @@ package ca.otterspace.ottercraft;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
@@ -26,16 +28,38 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
         return new ResourceLocation(Ottercraft.MODID, "animations/otter.animation.json");
     }
 
+    protected void animateTail(GeoBone bone, float angleX, float angleY) {
+        while (bone != null) {
+            bone.setRotationY(bone.getRotationY() + angleY);
+            bone.setRotationX(bone.getRotationX() + angleX);
+
+            angleX /= 2.0f;
+            angleY /= 2.0f;
+
+            if (bone.childBones.isEmpty())
+                bone = null;
+            else
+                bone = bone.childBones.get(0);
+        }
+    }
+
     @Override
     public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
-        IBone head = this.getAnimationProcessor().getBone("head");
-
-        LivingEntity entityIn = (LivingEntity) entity;
-        EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         if (!entity.isBegging()) {
+            IBone head = this.getAnimationProcessor().getBone("head");
+            EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F));
             head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F));
         }
+        float wagAmplitude;
+        if (entity.isBegging())
+            wagAmplitude = 0.4f;
+        else if (entity.isInWater() && entity.getDeltaMovement().lengthSqr() > 0.001f)
+            wagAmplitude = 0.3f;
+        else
+            wagAmplitude = 0.05f;
+        GeoBone bone = this.getModel(getModelLocation(entity)).getBone("tail").orElse(null);
+        this.animateTail(bone, 0, MathHelper.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
     }
 }

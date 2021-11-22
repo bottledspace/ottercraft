@@ -28,6 +28,8 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -175,7 +177,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
 
     @Override
     protected float getSoundVolume() {
-        return 0.6F;
+        return 0.4F;
     }
 
     protected boolean isLandNavigator;
@@ -286,7 +288,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
         super.tick();
 
         if (this.isInWaterOrBubble() && this.isInSittingPose())
-            setOrderedToSit(false);
+            super.setOrderedToSit(false);
 
         if (!this.level.isClientSide) {
             if (this.isInWater()) {
