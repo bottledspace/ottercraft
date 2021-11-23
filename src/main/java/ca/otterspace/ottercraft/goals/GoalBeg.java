@@ -28,12 +28,14 @@ public class GoalBeg extends Goal {
     }
 
     public boolean canUse() {
+        if (this.otter.isInWater())
+            return false;
         this.player = this.level.getNearestPlayer(this.begTargeting, this.otter);
         return this.player == null ? false : this.playerHoldingInteresting(this.player);
     }
 
     public boolean canContinueToUse() {
-        if (!this.player.isAlive()) {
+        if (!this.player.isAlive() || this.otter.isInWater()) {
             return false;
         } else if (this.otter.distanceToSqr(this.player) > (double)(this.lookDistance * this.lookDistance)) {
             return false;

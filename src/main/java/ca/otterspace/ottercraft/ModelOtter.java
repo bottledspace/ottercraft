@@ -45,9 +45,9 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     @Override
     public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
+        IBone head = this.getAnimationProcessor().getBone("head");
+        EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         if (!entity.isBegging() && !entity.isPassenger()) {
-            IBone head = this.getAnimationProcessor().getBone("head");
-            EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F));
             head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F));
 
@@ -56,11 +56,12 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
                 double dx = entity.getDeltaMovement().x;
                 double dz = entity.getDeltaMovement().z;
                 float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
-                angle = (float) MathHelper.clamp(angle, -Math.PI/4.0, Math.PI/4.0);
+                angle = (float) MathHelper.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
 
                 root.setRotationX(angle + root.getRotationX());
             }
         }
+
         float wagAmplitude;
         if (entity.isBegging())
             wagAmplitude = 0.4f;
