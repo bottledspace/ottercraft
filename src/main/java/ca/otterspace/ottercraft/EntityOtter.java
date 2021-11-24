@@ -7,8 +7,11 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -253,7 +256,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     private <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
         if (this.isInWater())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.slide", true));
-        else if (this.onGround && event.isMoving())
+        else if (event.isMoving())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.run", true));
         else if (this.isInSittingPose())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.sit", true));
