@@ -139,6 +139,26 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
         this.persistentAngerTarget = p_230259_1_;
     }
 
+    @Override
+    public boolean wantsToAttack(LivingEntity p_142018_1_, LivingEntity p_142018_2_) {
+        if (!(p_142018_1_ instanceof CreeperEntity) && !(p_142018_1_ instanceof GhastEntity)) {
+            if (p_142018_1_ instanceof WolfEntity) {
+                WolfEntity wolfentity = (WolfEntity) p_142018_1_;
+                return !wolfentity.isTame() || wolfentity.getOwner() != p_142018_2_;
+            } else if (p_142018_1_ instanceof EntityOtter) {
+                // Otters won't attack otters!
+                return false;
+            } else if (p_142018_1_ instanceof PlayerEntity && p_142018_2_ instanceof PlayerEntity && !((PlayerEntity)p_142018_2_).canHarmPlayer((PlayerEntity)p_142018_1_)) {
+                return false;
+            } else if (p_142018_1_ instanceof AbstractHorseEntity && ((AbstractHorseEntity)p_142018_1_).isTamed()) {
+                return false;
+            } else {
+                return !(p_142018_1_ instanceof TameableEntity) || !((TameableEntity)p_142018_1_).isTame();
+            }
+        } else {
+            return false;
+        }
+    }
 
     @Nullable
     public ILivingEntityData finalizeSpawn(IServerWorld level, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData edat, @Nullable CompoundNBT nbt) {
