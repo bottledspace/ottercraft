@@ -45,6 +45,10 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     @Override
     public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
+
+        if (Minecraft.getInstance().isPaused())
+            return;
+
         IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         if (!entity.isBegging() && !entity.isPassenger()) {
