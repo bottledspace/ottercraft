@@ -86,6 +86,14 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     @Override
+    public float getEyeHeight(Pose p_213307_1_) {
+        if (this.isBegging() || this.isPassenger())
+            return 1.0f;
+        else
+            return super.getEyeHeight(p_213307_1_);
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
 
