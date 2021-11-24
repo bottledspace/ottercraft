@@ -234,7 +234,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
 
     @Override
     public boolean shouldEnterWater() {
-        return swimTimer < 1000;
+        return swimTimer < -1000;
     }
 
     @Override
