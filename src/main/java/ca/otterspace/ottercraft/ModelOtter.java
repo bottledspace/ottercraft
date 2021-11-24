@@ -52,21 +52,26 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
 
         IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-        if (!entity.isBegging() && !entity.isPassenger()) {
-            head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F));
-            head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F));
-
-            if (entity.isInWater()) {
-                IBone root = this.getAnimationProcessor().getBone("root");
-                double dx = entity.getDeltaMovement().x;
-                double dz = entity.getDeltaMovement().z;
-                float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
-                angle = (float) MathHelper.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
-
-                root.setRotationX(angle + root.getRotationX());
-            }
+        if (entity.isBegging() || entity.isPassenger()) {
+            head.setRotationY((float) (Math.PI));
+            head.setRotationX((float) (Math.PI / 2.0 + Math.toRadians(extraData.headPitch)));
+            head.setRotationZ((float) (Math.PI - Math.toRadians(extraData.netHeadYaw)));
+        } else {
+            head.setRotationX((float) Math.toRadians(extraData.headPitch));
+            head.setRotationY((float) Math.toRadians(extraData.netHeadYaw));
         }
 
+        if (entity.isInWater()) {
+            // Tilt body up and down visually when in water
+            IBone root = this.getAnimationProcessor().getBone("root");
+            double dx = entity.getDeltaMovement().x;
+            double dz = entity.getDeltaMovement().z;
+            float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
+            angle = (float) MathHelper.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
+            root.setRotationX(angle + root.getRotationX());
+        }
+
+        // Wag tail
         float wagAmplitude;
         if (entity.isBegging())
             wagAmplitude = 0.4f;
