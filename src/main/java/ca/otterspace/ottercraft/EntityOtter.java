@@ -326,10 +326,10 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
             }
         }
 
-        if (this.isInWaterOrBubble() && this.isLandNavigator) {
+        if (this.isSwimming() && this.isLandNavigator) {
             switchNavigator(false);
         }
-        if (!this.isInWaterOrBubble() && !this.isLandNavigator) {
+        if (this.isOnGround() && !this.isLandNavigator) {
             switchNavigator(true);
         }
     }
