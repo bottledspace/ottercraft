@@ -52,6 +52,7 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
 
         IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+        extraData.netHeadYaw = (float)MathHelper.clamp(extraData.netHeadYaw, -Math.PI/4,Math.PI/4);
         if (entity.isBegging() || entity.isPassenger()) {
             head.setRotationY((float) (Math.PI));
             head.setRotationX((float) (Math.PI / 2.0 + Math.toRadians(extraData.headPitch)));
