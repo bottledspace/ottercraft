@@ -6,10 +6,26 @@ import net.minecraft.util.math.MathHelper;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
+    GeoBone root;
+    GeoBone head;
+    GeoBone harness;
+    GeoBone tail;
+
+    @Override
+    public GeoModel getModel(ResourceLocation location) {
+        GeoModel model = super.getModel(location);
+        this.root = model.getBone("root").get();
+        this.head = model.getBone("head").get();
+        this.harness = model.getBone("harness").get();
+        this.tail = model.getBone("tail").get();
+        return model;
+    }
+
     @Override
     public ResourceLocation getModelLocation(EntityOtter object) {
         return new ResourceLocation(Ottercraft.MODID, "geo/otter.geo.json");
@@ -17,10 +33,7 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
 
     @Override
     public ResourceLocation getTextureLocation(EntityOtter object) {
-        if (object.isTame())
-            return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter_tame.png");
-        else
-            return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter.png");
+        return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter.png");
     }
 
     @Override
@@ -47,10 +60,12 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
 
+        harness.setHidden(!entity.isTame());
+        tail.setHidden(entity.isPassenger());
+
         if (Minecraft.getInstance().isPaused())
             return;
 
-        IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         extraData.netHeadYaw = (float)MathHelper.clamp(extraData.netHeadYaw, -Math.PI/4,Math.PI/4);
         if (entity.isBegging() || entity.isPassenger()) {
@@ -64,7 +79,6 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
 
         if (entity.isInWater()) {
             // Tilt body up and down visually when in water
-            IBone root = this.getAnimationProcessor().getBone("root");
             double dx = entity.getDeltaMovement().x;
             double dz = entity.getDeltaMovement().z;
             float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
@@ -80,8 +94,6 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             wagAmplitude = 0.3f;
         else
             wagAmplitude = 0.05f;
-        GeoBone bone = this.getModel(getModelLocation(entity)).getBone("tail").orElse(null);
-        this.animateTail(bone, 0, MathHelper.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
-        bone.isHidden = entity.isPassenger();
+        this.animateTail(tail, 0, MathHelper.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
     }
 }
