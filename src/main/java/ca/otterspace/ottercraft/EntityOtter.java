@@ -53,7 +53,7 @@ import java.util.function.Predicate;
 public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAquatic, IAngerable {
     protected static final DataParameter<Boolean> BEGGING = EntityDataManager.defineId(EntityOtter.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> COLLAR_COLOR = EntityDataManager.defineId(EntityOtter.class, DataSerializers.INT);
-    private static final DataParameter<Integer> DATA_REMAINING_ANGER_TIME = EntityDataManager.defineId(WolfEntity.class, DataSerializers.INT);
+    private static final DataParameter<Integer> DATA_REMAINING_ANGER_TIME = EntityDataManager.defineId(EntityOtter.class, DataSerializers.INT);
     public static final Predicate<LivingEntity> PREY_SELECTOR = (p_213440_0_) -> {
         EntityType<?> entitytype = p_213440_0_.getType();
         return entitytype == EntityType.COD || entitytype == EntityType.SALMON
