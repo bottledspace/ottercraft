@@ -26,6 +26,7 @@ import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
@@ -43,6 +44,8 @@ import software.bernie.geckolib3.core.IAnimatable;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -280,7 +283,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
         this.goalSelector.addGoal(1, new SitGoal(this));
         this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(3, new GoalBeg(this, 4.0F));
-        this.goalSelector.addGoal(4, new GoalPlayWithItems(this));
+        //this.goalSelector.addGoal(4, new GoalPlayWithItems(this));
         this.goalSelector.addGoal(5, new GoalSwimWithPlayer(this, 4.0D));
         this.goalSelector.addGoal(6, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
@@ -307,10 +310,12 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
             this.navigation = new GroundPathNavigator(this, this.level);
             this.moveControl = new MovementController(this);
             this.isLandNavigator = true;
+            //Ottercraft.LOGGER.info("switching to land");
         } else {
             this.navigation = new SemiAquaticPathNavigator(this, this.level);
             this.moveControl = new SwimMovementController(this, 2.5f, 1.6f);
             this.isLandNavigator = false;
+            //Ottercraft.LOGGER.info("switching to water");
         }
     }
 
