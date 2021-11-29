@@ -35,8 +35,14 @@ import software.bernie.geckolib3.GeckoLib;
 @Mod(Ottercraft.MODID)
 public class Ottercraft {
     public static final String MODID = "ottercraft";
-    // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
+    public static SoundEvent OTTER_SQUEAK;
+    public static SoundEvent OTTER_ANGRY;
+
+    public static EntityType<EntityOtter> OTTER = new EntityType<EntityOtter>(EntityOtter::new,
+            EntityClassification.CREATURE, true,
+            true, false, false, ImmutableSet.of(),
+            EntitySize.fixed(0.9f, 1.0f), 4, 1);
 
     public Ottercraft() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -57,8 +63,6 @@ public class Ottercraft {
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::checkMobSpawnRules);
     }
 
-    public static SoundEvent OTTER_SQUEAK;
-    public static SoundEvent OTTER_ANGRY;
 
     @SubscribeEvent
     public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
@@ -86,9 +90,6 @@ public class Ottercraft {
                     .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
     }
 
-    public static EntityType<EntityOtter> OTTER = new EntityType<>(EntityOtter::new, EntityClassification.CREATURE, true,
-            true, false, false, ImmutableSet.of(),
-            EntitySize.fixed(0.9f, 1.0f), 4, 1);
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
@@ -99,18 +100,13 @@ public class Ottercraft {
 
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
+        LOGGER.info("attributeCreationEvent");
         event.put(OTTER, EntityOtter.createAttributes().build());
     }
 
-    public static ItemGroup TAB = new ItemGroup(MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return null;
-        }
-    };
-
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(TAB)).setRegistryName("ottercraft:spawn_egg_otter"));
+        LOGGER.info("registerItem");
+        event.getRegistry().register(new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(ItemGroup.TAB_MISC)).setRegistryName("ottercraft:spawn_egg_otter"));
     }
 }
