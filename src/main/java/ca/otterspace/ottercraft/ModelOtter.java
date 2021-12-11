@@ -1,8 +1,8 @@
 package ca.otterspace.ottercraft;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
@@ -67,7 +67,7 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             return;
 
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-        extraData.netHeadYaw = (float)MathHelper.clamp(extraData.netHeadYaw, -Math.PI/4,Math.PI/4);
+        extraData.netHeadYaw = (float) Mth.clamp(extraData.netHeadYaw, -Math.PI/4,Math.PI/4);
         if (entity.isBegging() || entity.isPassenger()) {
             head.setRotationY((float) (Math.PI));
             head.setRotationX((float) (Math.PI / 2.0 + Math.toRadians(extraData.headPitch)));
@@ -81,8 +81,8 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             // Tilt body up and down visually when in water
             double dx = entity.getDeltaMovement().x;
             double dz = entity.getDeltaMovement().z;
-            float angle = (float) (MathHelper.atan2(entity.getDeltaMovement().y, MathHelper.sqrt(dx * dx + dz * dz)));
-            angle = (float) MathHelper.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
+            float angle = (float) (Mth.atan2(entity.getDeltaMovement().y, Mth.sqrt((float)(dx * dx + dz * dz))));
+            angle = (float) Mth.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
             root.setRotationX(angle + root.getRotationX());
         }
 
@@ -94,6 +94,6 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
             wagAmplitude = 0.3f;
         else
             wagAmplitude = 0.05f;
-        this.animateTail(tail, 0, MathHelper.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
+        this.animateTail(tail, 0, Mth.cos((float) getCurrentTick() * 0.3331f) * wagAmplitude);
     }
 }

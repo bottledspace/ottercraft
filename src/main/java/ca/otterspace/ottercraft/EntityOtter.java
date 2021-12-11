@@ -1,39 +1,47 @@
 package ca.otterspace.ottercraft;
 
 import ca.otterspace.ottercraft.goals.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.GhastEntity;
-import net.minecraft.entity.monster.GuardianEntity;
-import net.minecraft.entity.passive.*;
-import net.minecraft.entity.passive.horse.AbstractHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.GroundPathNavigator;
-import net.minecraft.pathfinding.PathNodeType;
+import com.mojang.math.Vector3d;
+import net.minecraft.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.util.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -42,37 +50,36 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.core.IAnimatable;
 
+
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
 
-public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAquatic, IAngerable {
-    protected static final DataParameter<Boolean> BEGGING = EntityDataManager.defineId(EntityOtter.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Integer> COLLAR_COLOR = EntityDataManager.defineId(EntityOtter.class, DataSerializers.INT);
-    private static final DataParameter<Integer> DATA_REMAINING_ANGER_TIME = EntityDataManager.defineId(EntityOtter.class, DataSerializers.INT);
+public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAquatic, NeutralMob {
+    protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.INT);
     public static final Predicate<LivingEntity> PREY_SELECTOR = (p_213440_0_) -> {
         EntityType<?> entitytype = p_213440_0_.getType();
         return entitytype == EntityType.COD || entitytype == EntityType.SALMON
                 || entitytype == EntityType.TROPICAL_FISH;
     };
-    private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
+    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
 
-    public EntityOtter(EntityType<? extends TameableEntity> type, World worldIn) {
+    public EntityOtter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
         this.setTame(false);
         this.noCulling = true;
-        this.setPathfindingMalus(PathNodeType.WATER, 0.0F);
-        this.setPathfindingMalus(PathNodeType.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
         this.switchNavigator(false);
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes()
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
                 .add(Attributes.MOVEMENT_SPEED, (double)0.4F)
                 .add(Attributes.MAX_HEALTH, 8.0D)
                 .add(Attributes.ATTACK_DAMAGE, 2.0D);
@@ -87,8 +94,8 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     @Override
-    public Vector3d getLeashOffset() {
-        return new Vector3d(0.0D, (double)this.getBbHeight() * 0.5F, (double)(this.getBbWidth() * 0.4F));
+    public Vec3 getLeashOffset() {
+        return new Vec3(0.0D, (double)this.getBbHeight() * 0.5F, (double)(this.getBbWidth() * 0.4F));
     }
 
     @Override
@@ -100,20 +107,20 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
         compound.putByte("CollarColor", (byte)this.getCollarColor().getId());
         this.addPersistentAngerSaveData(compound);
     }
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
         if (compound.contains("CollarColor", 99)) {
             this.setCollarColor(DyeColor.byId(compound.getInt("CollarColor")));
         }
         if (!level.isClientSide)
-            this.readPersistentAngerSaveData((ServerWorld)this.level, compound);
+            this.readPersistentAngerSaveData(this.level, compound);
     }
     public DyeColor getCollarColor() {
         return DyeColor.byId(this.entityData.get(COLLAR_COLOR));
@@ -133,7 +140,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.randomValue(this.random));
+        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
     @Nullable
@@ -147,19 +154,19 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
 
     @Override
     public boolean wantsToAttack(LivingEntity p_142018_1_, LivingEntity p_142018_2_) {
-        if (!(p_142018_1_ instanceof CreeperEntity) && !(p_142018_1_ instanceof GhastEntity)) {
-            if (p_142018_1_ instanceof WolfEntity) {
-                WolfEntity wolfentity = (WolfEntity) p_142018_1_;
+        if (!(p_142018_1_ instanceof Creeper) && !(p_142018_1_ instanceof Ghast)) {
+            if (p_142018_1_ instanceof Wolf) {
+                Wolf wolfentity = (Wolf) p_142018_1_;
                 return !wolfentity.isTame() || wolfentity.getOwner() != p_142018_2_;
             } else if (p_142018_1_ instanceof EntityOtter) {
                 // Otters won't attack otters!
                 return false;
-            } else if (p_142018_1_ instanceof PlayerEntity && p_142018_2_ instanceof PlayerEntity && !((PlayerEntity)p_142018_2_).canHarmPlayer((PlayerEntity)p_142018_1_)) {
+            } else if (p_142018_1_ instanceof Player && p_142018_2_ instanceof Player && !((Player)p_142018_2_).canHarmPlayer((Player)p_142018_1_)) {
                 return false;
-            } else if (p_142018_1_ instanceof AbstractHorseEntity && ((AbstractHorseEntity)p_142018_1_).isTamed()) {
+            } else if (p_142018_1_ instanceof AbstractHorse && ((AbstractHorse)p_142018_1_).isTamed()) {
                 return false;
             } else {
-                return !(p_142018_1_ instanceof TameableEntity) || !((TameableEntity)p_142018_1_).isTame();
+                return !(p_142018_1_ instanceof TamableAnimal) || !((TamableAnimal)p_142018_1_).isTame();
             }
         } else {
             return false;
@@ -167,15 +174,15 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     @Nullable
-    public ILivingEntityData finalizeSpawn(IServerWorld level, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData edat, @Nullable CompoundNBT nbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData edat, @Nullable CompoundTag nbt) {
         this.setAirSupply(this.getMaxAirSupply());
-        this.xRot = 0.0F;
+        //this.xRot = 0.0F;
         return super.finalizeSpawn(level, difficulty, reason, edat, nbt);
     }
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity parent) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
         return Ottercraft.OTTER.create(world);
     }
 
@@ -190,7 +197,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     public void die(DamageSource cause) {
         if (!this.level.isClientSide
                 && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)
-                && this.getOwner() instanceof ServerPlayerEntity) {
+                && this.getOwner() instanceof ServerPlayer) {
             this.getOwner().sendMessage(this.getCombatTracker().getDeathMessage(), Util.NIL_UUID);
         }
 
@@ -279,36 +286,36 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new BreatheAirGoal(this));
-        this.goalSelector.addGoal(1, new SitGoal(this));
+        this.goalSelector.addGoal(0, new BreathAirGoal(this));
+        this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(3, new GoalBeg(this, 4.0F));
-        //this.goalSelector.addGoal(4, new GoalPlayWithItems(this));
+        this.goalSelector.addGoal(4, new GoalPlayWithItems(this));
         this.goalSelector.addGoal(5, new GoalSwimWithPlayer(this, 4.0D));
         this.goalSelector.addGoal(6, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new FollowBoatGoal(this));
         this.goalSelector.addGoal(9, new GoalEnterWater(this));
         this.goalSelector.addGoal(10, new GoalLeaveWater(this));
-        this.goalSelector.addGoal(11, new RandomWalkingGoal(this, 1.0D, 60));
-        this.goalSelector.addGoal(12, new AvoidEntityGoal<>(this, GuardianEntity.class, 8.0F, 1.0D, 1.0D));
-        this.goalSelector.addGoal(13, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(14, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(11, new RandomStrollGoal(this, 1.0D, 60));
+        this.goalSelector.addGoal(12, new AvoidEntityGoal<>(this, Guardian.class, 8.0F, 1.0D, 1.0D));
+        this.goalSelector.addGoal(13, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(14, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(5, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, PREY_SELECTOR));
-        this.targetSelector.addGoal(6, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
-        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, false));
-        this.targetSelector.addGoal(8, new ResetAngerGoal<>(this, true));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, GuardianEntity.class)).setAlertOthers());
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
+        this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
+        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
+        this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
+        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, Guardian.class)).setAlertOthers());
     }
 
     private void switchNavigator(boolean onLand) {
         if (onLand) {
-            this.navigation = new GroundPathNavigator(this, this.level);
-            this.moveControl = new MovementController(this);
+            this.navigation = new GroundPathNavigation(this, this.level);
+            this.moveControl = new MoveControl(this);
             this.isLandNavigator = true;
             //Ottercraft.LOGGER.info("switching to land");
         } else {
@@ -346,7 +353,7 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     public void aiStep() {
         super.aiStep();
         if (!this.level.isClientSide) {
-            this.updatePersistentAnger((ServerWorld)this.level, true);
+            this.updatePersistentAnger((ServerLevel) this.level, true);
         }
     }
 
@@ -371,13 +378,13 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     }
 
     @Override
-    public ActionResultType mobInteract(PlayerEntity playerIn, Hand hand) {
+    public InteractionResult mobInteract(Player playerIn, InteractionHand hand) {
         ItemStack itemstack = playerIn.getItemInHand(hand);
         if (itemstack.isEmpty() && this.isTame()) {
             // If we are already tame, take this as a command to sit.
             boolean shouldSit = !this.isInSittingPose();
             this.setOrderedToSit(shouldSit);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
 
         } else if (this.isFood(itemstack)) {
             if (!this.isTame()) {
@@ -392,16 +399,16 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
                 // Probably broadcasts that we are now tame?
                 this.level.broadcastEntityEvent(this, (byte)7);
 
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
                 // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
 
                 if (this.getHealth() < this.getMaxHealth()) {
-                    if (!playerIn.abilities.instabuild) {
+                    if (!playerIn.getAbilities().instabuild) {
                         itemstack.shrink(1);
                     }
                     this.heal((float)itemstack.getItem().getFoodProperties().getNutrition());
-                    return ActionResultType.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
             }
         }

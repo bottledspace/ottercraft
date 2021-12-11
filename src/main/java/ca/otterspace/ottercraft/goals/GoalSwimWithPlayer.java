@@ -1,20 +1,21 @@
 package ca.otterspace.ottercraft.goals;
 
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.EnumSet;
 
 public class GoalSwimWithPlayer extends Goal {
-    private static final EntityPredicate SWIM_WITH_PLAYER_TARGETING = (new EntityPredicate()).range(10.0D).allowSameTeam().allowInvulnerable().allowUnseeable();
+    private static final TargetingConditions SWIM_WITH_PLAYER_TARGETING = TargetingConditions.forNonCombat().range(10.0D);
 
-    private final MobEntity mob;
+    private final Mob mob;
     private final double speedModifier;
-    private PlayerEntity player;
+    private Player player;
 
-    public GoalSwimWithPlayer(MobEntity mob, double speedModifier) {
+    public GoalSwimWithPlayer(Mob mob, double speedModifier) {
         this.mob = mob;
         this.speedModifier = speedModifier;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

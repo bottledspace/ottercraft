@@ -1,21 +1,21 @@
 package ca.otterspace.ottercraft.goals;
 
 import ca.otterspace.ottercraft.ISemiAquatic;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 import java.util.Random;
 
 // Modified from Alex's Mobs
 public class GoalEnterWater extends Goal {
-    private final CreatureEntity creature;
+    private final Mob creature;
     private BlockPos targetPos;
     private int executionChance = 30;
 
-    public GoalEnterWater(CreatureEntity creature) {
+    public GoalEnterWater(Mob creature) {
         this.creature = creature;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }

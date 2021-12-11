@@ -1,17 +1,20 @@
 package ca.otterspace.ottercraft;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.*;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,7 +22,6 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -40,9 +42,9 @@ public class Ottercraft {
     public static SoundEvent OTTER_ANGRY;
 
     public static EntityType<EntityOtter> OTTER = new EntityType<EntityOtter>(EntityOtter::new,
-            EntityClassification.CREATURE, true,
+            MobCategory.CREATURE, true,
             true, false, false, ImmutableSet.of(),
-            EntitySize.fixed(0.9f, 1.0f), 4, 1);
+            EntityDimensions.fixed(0.9f, 1.0f), 4, 1);
 
     public Ottercraft() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -58,9 +60,10 @@ public class Ottercraft {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        RenderingRegistry.<EntityOtter>registerEntityRenderingHandler(OTTER, RendererOtter::new);
-        EntitySpawnPlacementRegistry.register(OTTER, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS,
-                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::checkMobSpawnRules);
+
+        EntityRenderers.register(OTTER, RendererOtter::new);
+        SpawnPlacements.register(OTTER, SpawnPlacements.Type.NO_RESTRICTIONS,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkMobSpawnRules);
     }
 
 
@@ -82,12 +85,12 @@ public class Ottercraft {
         Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
         if (biome == null)
             return;
-        else if (biome.getBiomeCategory() == Biome.Category.RIVER)
-            event.getSpawns().getSpawner(EntityClassification.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
-        else if (biome.getBiomeCategory() == Biome.Category.SWAMP)
-            event.getSpawns().getSpawner(EntityClassification.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
+        else if (biome.getBiomeCategory() == Biome.BiomeCategory.RIVER)
+            event.getSpawns().getSpawner(MobCategory.CREATURE)
+                    .add(new MobSpawnSettings.SpawnerData(OTTER, 200, 3, 5));
+        else if (biome.getBiomeCategory() == Biome.BiomeCategory.SWAMP)
+            event.getSpawns().getSpawner(MobCategory.CREATURE)
+                    .add(new MobSpawnSettings.SpawnerData(OTTER, 200, 3, 5));
     }
 
 
@@ -107,6 +110,6 @@ public class Ottercraft {
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
         LOGGER.info("registerItem");
-        event.getRegistry().register(new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(ItemGroup.TAB_MISC)).setRegistryName("ottercraft:spawn_egg_otter"));
+        event.getRegistry().register(new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("ottercraft:spawn_egg_otter"));
     }
 }

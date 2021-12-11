@@ -1,29 +1,30 @@
 package ca.otterspace.ottercraft.goals;
 
 import ca.otterspace.ottercraft.EntityOtter;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
+import java.util.function.Predicate;
 
 public class GoalBeg extends Goal {
     private final EntityOtter otter;
-    private PlayerEntity player;
-    private final World level;
+    private Player player;
+    private final Level level;
     private final float lookDistance;
     private int lookTime;
-    private final EntityPredicate begTargeting;
+    private final TargetingConditions begTargeting;
 
     public GoalBeg(EntityOtter p_i1617_1_, float p_i1617_2_) {
         this.otter = p_i1617_1_;
         this.level = p_i1617_1_.level;
         this.lookDistance = p_i1617_2_;
-        this.begTargeting = (new EntityPredicate()).range((double)p_i1617_2_)
-                .allowInvulnerable().allowSameTeam().allowNonAttackable();
+        this.begTargeting = TargetingConditions.forNonCombat().range((double)p_i1617_2_);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
@@ -64,8 +65,8 @@ public class GoalBeg extends Goal {
         }
     }
 
-    private boolean playerHoldingInteresting(PlayerEntity p_75382_1_) {
-        for (Hand hand : Hand.values()) {
+    private boolean playerHoldingInteresting(Player p_75382_1_) {
+        for (InteractionHand hand : InteractionHand.values()) {
             ItemStack itemstack = p_75382_1_.getItemInHand(hand);
             if (this.otter.isFood(itemstack)) {
                 return true;

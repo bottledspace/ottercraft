@@ -1,24 +1,24 @@
 package ca.otterspace.ottercraft;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 
-public class SwimMovementController extends MovementController {
-    private final CreatureEntity entity;
+public class SwimMovementController extends MoveControl {
+    private final Mob entity;
     private float speedMulti;
     private float ySpeedMod = 1;
     private float yawLimit = 10.0F;
 
-    public SwimMovementController(CreatureEntity entity, float speedMulti, float ySpeedMod) {
+    public SwimMovementController(Mob entity, float speedMulti, float ySpeedMod) {
         super(entity);
         this.entity = entity;
         this.speedMulti = speedMulti;
         this.ySpeedMod = ySpeedMod;
     }
 
-    public SwimMovementController(CreatureEntity entity, float speedMulti, float ySpeedMod, float yawLimit) {
+    public SwimMovementController(Mob entity, float speedMulti, float ySpeedMod, float yawLimit) {
         super(entity);
         this.entity = entity;
         this.speedMulti = speedMulti;
@@ -31,7 +31,7 @@ public class SwimMovementController extends MovementController {
         //    this.entity.setAIMoveSpeed(0.0F);
         //    return;
         //}
-        if (this.operation == Action.MOVE_TO && !this.entity.getNavigation().isDone()) {
+        if (this.operation == Operation.MOVE_TO && !this.entity.getNavigation().isDone()) {
             double lvt_1_1_ = this.wantedX - this.entity.getX();
             double lvt_3_1_ = this.wantedY - this.entity.getY();
             double lvt_5_1_ = this.wantedZ - this.entity.getZ();
@@ -40,10 +40,10 @@ public class SwimMovementController extends MovementController {
                 this.mob.setZza(0.0F);
                 return;
             }
-            float lvt_9_1_ = (float) (MathHelper.atan2(lvt_5_1_, lvt_1_1_) * 57.2957763671875D) - 90.0F;
-            this.entity.yRot = this.rotlerp(this.entity.yRot, lvt_9_1_, yawLimit);
-            this.entity.yBodyRot = this.entity.yRot;
-            this.entity.yHeadRot = this.entity.yRot;
+            float lvt_9_1_ = (float) (Mth.atan2(lvt_5_1_, lvt_1_1_) * 57.2957763671875D) - 90.0F;
+            this.entity.setYRot(this.rotlerp(this.entity.getYRot(), lvt_9_1_, yawLimit));
+            this.entity.yBodyRot = this.entity.getYRot();
+            this.entity.yHeadRot = this.entity.getYRot();
             float lvt_10_1_ = (float) (this.speedModifier * speedMulti * 3 * this.entity.getAttributeValue(Attributes.MOVEMENT_SPEED));
             if (!this.entity.isInWater()) {
                 this.entity.setSpeed(lvt_10_1_ * 0.1F);
@@ -56,11 +56,11 @@ public class SwimMovementController extends MovementController {
                 this.entity.setDeltaMovement(this.entity.getDeltaMovement().add(0.0D, (double) this.entity.getSpeed() * lvt_3_1_ * 0.6D * ySpeedMod, 0.0D));
             }
             this.entity.setSpeed(lvt_10_1_ * 0.02F);
-            float lvt_11_1_ = -((float) (MathHelper.atan2(lvt_3_1_, MathHelper.sqrt(lvt_1_1_ * lvt_1_1_ + lvt_5_1_ * lvt_5_1_)) * 57.2957763671875D));
-            lvt_11_1_ = MathHelper.clamp(MathHelper.wrapDegrees(lvt_11_1_), -85.0F, 85.0F);
-            this.entity.xRot = this.rotlerp(this.entity.xRot, lvt_11_1_, 5.0F);
-            float lvt_12_1_ = MathHelper.cos(this.entity.xRot * 0.017453292F);
-            float lvt_13_1_ = MathHelper.sin(this.entity.xRot * 0.017453292F);
+            float lvt_11_1_ = -((float) (Mth.atan2(lvt_3_1_, Mth.sqrt((float)(lvt_1_1_ * lvt_1_1_ + lvt_5_1_ * lvt_5_1_))) * 57.2957763671875D));
+            lvt_11_1_ = Mth.clamp(Mth.wrapDegrees(lvt_11_1_), -85.0F, 85.0F);
+            this.entity.setXRot(this.rotlerp(this.entity.getXRot(), lvt_11_1_, 5.0F));
+            float lvt_12_1_ = Mth.cos(this.entity.getXRot() * 0.017453292F);
+            float lvt_13_1_ = Mth.sin(this.entity.getXRot() * 0.017453292F);
             this.entity.zza = lvt_12_1_ * lvt_10_1_;
             this.entity.yya = -lvt_13_1_ * lvt_10_1_;
         } else {
