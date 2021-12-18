@@ -3,6 +3,7 @@ package ca.otterspace.ottercraft;
 import ca.otterspace.ottercraft.goals.*;
 import com.mojang.math.Vector3d;
 import net.minecraft.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,13 +19,16 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
@@ -40,7 +44,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -226,7 +232,7 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
 
     @Override
     public boolean canBreatheUnderwater() {
-        return false;
+        return true;
     }
 
     @Override
@@ -317,12 +323,12 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
             this.navigation = new GroundPathNavigation(this, this.level);
             this.moveControl = new MoveControl(this);
             this.isLandNavigator = true;
-            //Ottercraft.LOGGER.info("switching to land");
+            Ottercraft.LOGGER.info("switching to land");
         } else {
             this.navigation = new SemiAquaticPathNavigator(this, this.level);
-            this.moveControl = new SwimMovementController(this, 2.5f, 1.6f);
+            this.moveControl = new SwimMovementController(this,  2.5f, 1.6f);
             this.isLandNavigator = false;
-            //Ottercraft.LOGGER.info("switching to water");
+            Ottercraft.LOGGER.info("switching to water");
         }
     }
 

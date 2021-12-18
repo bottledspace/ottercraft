@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
 import net.minecraft.world.phys.BlockHitResult;
@@ -17,8 +18,7 @@ public class SemiAquaticPathNavigator extends WaterBoundPathNavigation {
 
     @Override
     protected PathFinder createPathFinder(int p_179679_1_) {
-        boolean allowBreaching = false;
-        this.nodeEvaluator = new SwimNodeEvaluator(allowBreaching);
+        this.nodeEvaluator = new SwimNodeEvaluator(false);
         return new PathFinder(this.nodeEvaluator, p_179679_1_);
     }
 
