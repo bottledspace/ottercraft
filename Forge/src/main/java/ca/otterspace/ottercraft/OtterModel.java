@@ -4,13 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
+public class OtterModel extends AnimatedGeoModel<Otter> {
     GeoBone root;
     GeoBone head;
     GeoBone harness;
@@ -27,17 +26,17 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityOtter object) {
+    public ResourceLocation getModelLocation(Otter object) {
         return new ResourceLocation(Ottercraft.MODID, "geo/otter.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityOtter object) {
+    public ResourceLocation getTextureLocation(Otter object) {
         return new ResourceLocation(Ottercraft.MODID, "textures/entity/otter.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityOtter object) {
+    public ResourceLocation getAnimationFileLocation(Otter object) {
         return new ResourceLocation(Ottercraft.MODID, "animations/otter.animation.json");
     }
 
@@ -57,7 +56,7 @@ public class ModelOtter extends AnimatedGeoModel<EntityOtter> {
     }
 
     @Override
-    public void setLivingAnimations(EntityOtter entity, Integer uniqueID, AnimationEvent customPredicate) {
+    public void setLivingAnimations(Otter entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
 
         harness.setHidden(!entity.isTame());

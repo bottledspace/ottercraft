@@ -1,9 +1,7 @@
 package ca.otterspace.ottercraft;
 
 import ca.otterspace.ottercraft.goals.*;
-import com.mojang.math.Vector3d;
 import net.minecraft.*;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -19,16 +17,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
@@ -44,9 +39,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -63,10 +56,10 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 
-public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAquatic, NeutralMob {
-    protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(EntityOtter.class, EntityDataSerializers.INT);
+public class Otter extends TamableAnimal implements IAnimatable, ISemiAquatic, NeutralMob {
+    protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
     public static final Predicate<LivingEntity> PREY_SELECTOR = (p_213440_0_) -> {
         EntityType<?> entitytype = p_213440_0_.getType();
         return entitytype == EntityType.COD || entitytype == EntityType.SALMON
@@ -75,7 +68,7 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
 
-    public EntityOtter(EntityType<? extends TamableAnimal> type, Level worldIn) {
+    public Otter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
         this.setTame(false);
         this.noCulling = true;
@@ -164,7 +157,7 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
             if (p_142018_1_ instanceof Wolf) {
                 Wolf wolfentity = (Wolf) p_142018_1_;
                 return !wolfentity.isTame() || wolfentity.getOwner() != p_142018_2_;
-            } else if (p_142018_1_ instanceof EntityOtter) {
+            } else if (p_142018_1_ instanceof Otter) {
                 // Otters won't attack otters!
                 return false;
             } else if (p_142018_1_ instanceof Player && p_142018_2_ instanceof Player && !((Player)p_142018_2_).canHarmPlayer((Player)p_142018_1_)) {
@@ -285,7 +278,7 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
 
     @Override
     public void registerControllers(AnimationData data) {
-        AnimationController<EntityOtter> controller = new AnimationController<>(this, "controller", 3, this::animationPredicate);
+        AnimationController<Otter> controller = new AnimationController<>(this, "controller", 3, this::animationPredicate);
         data.addAnimationController(controller);
     }
 
@@ -386,12 +379,13 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
     @Override
     public InteractionResult mobInteract(Player playerIn, InteractionHand hand) {
         ItemStack itemstack = playerIn.getItemInHand(hand);
-        if (itemstack.isEmpty() && this.isTame()) {
-            // If we are already tame, take this as a command to sit.
-            boolean shouldSit = !this.isInSittingPose();
-            this.setOrderedToSit(shouldSit);
-            return InteractionResult.SUCCESS;
-
+        if (itemstack.isEmpty()) {
+            if (this.isTame()) {
+                // If we are already tame, take this as a command to sit.
+                boolean shouldSit = !this.isInSittingPose();
+                this.setOrderedToSit(shouldSit);
+                return InteractionResult.SUCCESS;
+            }
         } else if (this.isFood(itemstack)) {
             if (!this.isTame()) {
                 // If not already tame and offered food, become tame and sit.
@@ -410,10 +404,12 @@ public class EntityOtter extends TamableAnimal implements IAnimatable, ISemiAqua
                 // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
 
                 if (this.getHealth() < this.getMaxHealth()) {
+                    float nutrition = (float)itemstack.getItem().getFoodProperties().getNutrition();
+                    
                     if (!playerIn.getAbilities().instabuild) {
                         itemstack.shrink(1);
                     }
-                    this.heal((float)itemstack.getItem().getFoodProperties().getNutrition());
+                    this.heal(nutrition);
                     return InteractionResult.CONSUME;
                 }
             }

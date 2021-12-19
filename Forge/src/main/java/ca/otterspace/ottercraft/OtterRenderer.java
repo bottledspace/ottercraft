@@ -7,24 +7,21 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
-import java.lang.reflect.Method;
 
-public class RendererOtter extends GeoEntityRenderer<EntityOtter> {
-    public RendererOtter(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new ModelOtter());
+public class OtterRenderer extends GeoEntityRenderer<Otter> {
+    public OtterRenderer(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new OtterModel());
         this.shadowRadius = 0.7F; //change 0.7 to the desired shadow size.
     }
 
     @Override
-    public void render(EntityOtter entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(Otter entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
         stack.pushPose();
         stack.scale(0.6f, 0.6f, 0.6f);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
@@ -32,14 +29,13 @@ public class RendererOtter extends GeoEntityRenderer<EntityOtter> {
 
         Entity leashHolder = entity.getLeashHolder();
         if (leashHolder != null) {
-
             this.renderLeash(entity, partialTicks, stack, bufferIn, leashHolder);
         }
     }
 
     // Unfortunately need to pull this in since renderLeash is inaccessible to us.
     //<editor-fold desc="Leash Rendering">
-    private <E extends Entity> void renderLeash(EntityOtter p_115462_, float p_115463_, PoseStack p_115464_, MultiBufferSource p_115465_, E p_115466_) {
+    private <E extends Entity> void renderLeash(Otter p_115462_, float p_115463_, PoseStack p_115464_, MultiBufferSource p_115465_, E p_115466_) {
         p_115464_.pushPose();
         Vec3 vec3 = p_115466_.getRopeHoldPosition(p_115463_);
         double d0 = (double)(Mth.lerp(p_115463_, p_115462_.yBodyRot, p_115462_.yBodyRotO) * ((float)Math.PI / 180F)) + (Math.PI / 2D);

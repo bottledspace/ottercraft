@@ -41,7 +41,7 @@ public class Ottercraft {
     public static SoundEvent OTTER_SQUEAK;
     public static SoundEvent OTTER_ANGRY;
 
-    public static EntityType<EntityOtter> OTTER = new EntityType<EntityOtter>(EntityOtter::new,
+    public static EntityType<Otter> OTTER = new EntityType<Otter>(Otter::new,
             MobCategory.CREATURE, true,
             true, false, false, ImmutableSet.of(),
             EntityDimensions.fixed(0.9f, 1.0f), 4, 1);
@@ -61,7 +61,7 @@ public class Ottercraft {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
 
-        EntityRenderers.register(OTTER, RendererOtter::new);
+        EntityRenderers.register(OTTER, OtterRenderer::new);
         SpawnPlacements.register(OTTER, SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkMobSpawnRules);
     }
@@ -104,7 +104,7 @@ public class Ottercraft {
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
         LOGGER.info("attributeCreationEvent");
-        event.put(OTTER, EntityOtter.createAttributes().build());
+        event.put(OTTER, Otter.createAttributes().build());
     }
 
     @SubscribeEvent

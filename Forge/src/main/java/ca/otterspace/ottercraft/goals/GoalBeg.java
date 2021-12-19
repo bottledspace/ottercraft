@@ -1,8 +1,7 @@
 package ca.otterspace.ottercraft.goals;
 
-import ca.otterspace.ottercraft.EntityOtter;
+import ca.otterspace.ottercraft.Otter;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
@@ -10,17 +9,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
-import java.util.function.Predicate;
 
 public class GoalBeg extends Goal {
-    private final EntityOtter otter;
+    private final Otter otter;
     private Player player;
     private final Level level;
     private final float lookDistance;
     private int lookTime;
     private final TargetingConditions begTargeting;
 
-    public GoalBeg(EntityOtter p_i1617_1_, float p_i1617_2_) {
+    public GoalBeg(Otter p_i1617_1_, float p_i1617_2_) {
         this.otter = p_i1617_1_;
         this.level = p_i1617_1_.level;
         this.lookDistance = p_i1617_2_;
