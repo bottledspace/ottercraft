@@ -19,12 +19,12 @@
     "environment": "*",
     "entrypoints": {
       "main": [
-        "ca.otterspace.ottercraft.ExampleMod"
+        "ca.otterspace.ottercraft.OttercraftCommon"
+      ],
+      "client": [
+        "ca.otterspace.ottercraft.OttercraftClient"
       ]
     },
-    "mixins": [
-      "ottercraft.mixins.json"
-    ],
   
     "depends": {
       "fabricloader": ">=0.12",

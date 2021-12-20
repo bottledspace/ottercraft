@@ -16,21 +16,18 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.core.IAnimatable;
 
-import javax.annotation.Nullable;
-
-
 public class Otter extends AbstractOtter implements IAnimatable {
     Otter(EntityType<? extends TamableAnimal> type, Level level) {
         super(type, level);
     }
     
     private final AnimationFactory factory = new AnimationFactory(this);
-
+    
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
     }
-
+    
     private <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
         if (this.isInWater())
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.slide", true));
@@ -44,7 +41,7 @@ public class Otter extends AbstractOtter implements IAnimatable {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.idle", true));
         return PlayState.CONTINUE;
     }
-
+    
     @Override
     public void registerControllers(AnimationData data) {
         AnimationController<Otter> controller = new AnimationController<>(this, "controller", 3, this::animationPredicate);
@@ -52,20 +49,17 @@ public class Otter extends AbstractOtter implements IAnimatable {
     }
     
     
-    @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
-        return OttercraftClient.OTTER.create(world);
+        return OttercraftCommon.OTTER.create(world);
     }
     
     
-    @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
         return OttercraftClient.OTTER_SQUEAK;
     }
     
-    @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
         return OttercraftClient.OTTER_ANGRY;
