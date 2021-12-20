@@ -31,7 +31,7 @@ public class OttercraftCommon implements ModInitializer {
                     .build()
     );
     
-    SpawnEggItem OTTER_SPAWN_EGG = new SpawnEggItem(OttercraftCommon.OTTER, 0x996633, 0x663300, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+    static final SpawnEggItem OTTER_SPAWN_EGG = new SpawnEggItem(OttercraftCommon.OTTER, 0x996633, 0x663300, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
     
     @Override
     public void onInitialize() {
