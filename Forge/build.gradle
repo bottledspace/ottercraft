@@ -9,7 +9,6 @@ buildscript {
 }
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
@@ -30,7 +29,7 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
             mods {
-                modClientRun {
+                ottercraft {
                     source sourceSets.main
                     source project(":Common").sourceSets.main
                 }
@@ -42,7 +41,7 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Server'
             mods {
-                modServerRun {
+                ottercraft {
                     source sourceSets.main
                     source project(":Common").sourceSets.main
                 }
@@ -55,7 +54,7 @@ minecraft {
             args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             taskName 'Data'
             mods {
-                modDataRun {
+                ottercraft {
                     source sourceSets.main
                     source project(":Common").sourceSets.main
                 }
@@ -67,19 +66,11 @@ minecraft {
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    flatDir {
-        dir 'libs'
-    }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    mavenLocal()
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("software.bernie.geckolib:geckolib-1.18:3.0.1")
     compileOnly project(":Common")
 }
 

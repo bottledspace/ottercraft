@@ -1,13 +1,12 @@
 package ca.otterspace.ottercraft;
 
 import ca.otterspace.ottercraft.goals.*;
-import net.minecraft.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,21 +34,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.util.*;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 
-
 import java.util.UUID;
 import java.util.function.Predicate;
 
 
-public abstract class AbstractOtter extends TamableAnimal implements ISemiAquatic, IBegger, NeutralMob {
-    protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(AbstractOtter.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(AbstractOtter.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(AbstractOtter.class, EntityDataSerializers.INT);
+public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, NeutralMob {
+    protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
     public static final Predicate<LivingEntity> PREY_SELECTOR = (p_213440_0_) -> {
         EntityType<?> entitytype = p_213440_0_.getType();
         return entitytype == EntityType.COD || entitytype == EntityType.SALMON
@@ -57,8 +54,9 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
     };
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
+    public ca.otterspace.anim.AnimationController animationController = new ca.otterspace.anim.AnimationController();
     
-    public AbstractOtter(EntityType<? extends TamableAnimal> type, Level worldIn) {
+    public Otter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
         this.setTame(false);
         this.noCulling = true;
@@ -146,7 +144,7 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
             if (p_142018_1_ instanceof Wolf) {
                 Wolf wolfentity = (Wolf) p_142018_1_;
                 return !wolfentity.isTame() || wolfentity.getOwner() != p_142018_2_;
-            } else if (p_142018_1_ instanceof AbstractOtter) {
+            } else if (p_142018_1_ instanceof Otter) {
                 // Otters won't attack otters!
                 return false;
             } else if (p_142018_1_ instanceof Player && p_142018_2_ instanceof Player && !((Player)p_142018_2_).canHarmPlayer((Player)p_142018_1_)) {
@@ -172,17 +170,6 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
         Item item = stack.getItem();
         return item == Items.COD
                 | item == Items.SALMON;
-    }
-    
-    @Override
-    public void die(DamageSource cause) {
-        if (!this.level.isClientSide
-                && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)
-                && this.getOwner() instanceof ServerPlayer) {
-            this.getOwner().sendMessage(this.getCombatTracker().getDeathMessage(), Util.NIL_UUID);
-        }
-        
-        super.die(cause);
     }
     
     @Override
@@ -265,6 +252,20 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
         }
     }
     
+    void setAnimation() {
+        Vec3 movement = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z());
+        if (isInWater())
+            animationController.setAnimation("animation.otter.slide");
+        else if (movement.dot(movement) > 0.015f*0.015f)
+            animationController.setAnimation("animation.otter.run");
+        else if (isInSittingPose())
+            animationController.setAnimation("animation.otter.sit");
+        else if (isBegging() || isPassenger())
+            animationController.setAnimation("animation.otter.beg");
+        else
+            animationController.setAnimation("animation.otter.idle");
+    }
+    
     @Override
     public void tick() {
         super.tick();
@@ -285,6 +286,13 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
         }
         if (this.isOnGround() && !this.isLandNavigator) {
             switchNavigator(true);
+        }
+        
+        if (this.level.isClientSide) {
+            if (this.animationController != null) {
+                this.setAnimation();
+                this.animationController.tick();
+            }
         }
     }
     
@@ -354,5 +362,20 @@ public abstract class AbstractOtter extends TamableAnimal implements ISemiAquati
             }
         }
         return super.mobInteract(playerIn, hand);
+    }
+    
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return Ottercraft.OTTER_SQUEAK;
+    }
+    
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return Ottercraft.OTTER_ANGRY;
+    }
+    
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
+        return Ottercraft.OTTER.create(world);
     }
 }
