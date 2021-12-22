@@ -4,14 +4,12 @@ plugins {
     id 'maven-publish'
     id 'idea'
 }
-apply plugin: 'java'
 
 archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
 
 repositories {
-    flatDir { dir 'libs' }
-    //maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     mavenLocal()
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -20,6 +18,8 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation 'com.eliotlash.molang:molang:18'
+    implementation 'com.eliotlash.mclib:mclib:18'
     modImplementation 'software.bernie.geckolib:geckolib-fabric-1.18:3.0.23'
     implementation project(":Common")
 }
