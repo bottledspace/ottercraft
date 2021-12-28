@@ -67,14 +67,11 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
     mavenLocal()
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    //implementation fg.deobf("software.bernie.geckolib:geckolib-1.18:3.0.1")
     compileOnly project(":Common")
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.3')
 }
 
 tasks.withType(JavaCompile) {

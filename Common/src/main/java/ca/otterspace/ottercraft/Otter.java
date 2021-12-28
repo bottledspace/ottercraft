@@ -38,19 +38,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.UUID;
 import java.util.function.Predicate;
 
 
-public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, NeutralMob, IAnimatable {
+public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, NeutralMob {
     protected static final EntityDataAccessor<Boolean> BEGGING = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Integer> COLLAR_COLOR = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.INT);
@@ -61,6 +54,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     };
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
+    public ca.otterspace.anim.AnimationController animationController = new ca.otterspace.anim.AnimationController();
     
     public Otter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
@@ -258,6 +252,20 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         }
     }
     
+    void setAnimation() {
+        Vec3 movement = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z());
+        if (isInWater())
+            animationController.setAnimation("animation.otter.slide");
+        else if (movement.dot(movement) > 0.015f*0.015f)
+            animationController.setAnimation("animation.otter.run");
+        else if (isInSittingPose())
+            animationController.setAnimation("animation.otter.sit");
+        else if (isBegging() || isPassenger())
+            animationController.setAnimation("animation.otter.beg");
+        else
+            animationController.setAnimation("animation.otter.idle");
+    }
+    
     @Override
     public void tick() {
         super.tick();
@@ -278,6 +286,13 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         }
         if (this.isOnGround() && !this.isLandNavigator) {
             switchNavigator(true);
+        }
+        
+        if (this.level.isClientSide) {
+            if (this.animationController != null) {
+                this.setAnimation();
+                this.animationController.tick();
+            }
         }
     }
     
@@ -357,34 +372,6 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
         return Ottercraft.OTTER_ANGRY;
-    }
-    
-    
-    private final AnimationFactory factory = new AnimationFactory(this);
-    
-    @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
-    }
-    
-    private <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
-        if (this.isInWater())
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.slide", true));
-        else if (event.isMoving())
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.run", true));
-        else if (this.isInSittingPose())
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.sit", true));
-        else if (this.isBegging() || this.isPassenger())
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.beg", true));
-        else
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.otter.idle", true));
-        return PlayState.CONTINUE;
-    }
-    
-    @Override
-    public void registerControllers(AnimationData data) {
-        AnimationController<Otter> controller = new AnimationController<>(this, "controller", 3, this::animationPredicate);
-        data.addAnimationController(controller);
     }
     
     @Override

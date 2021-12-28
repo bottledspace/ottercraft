@@ -7,17 +7,17 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-public class OtterRenderer extends GeoEntityRenderer<Otter> {
-    public OtterRenderer(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new OtterModel());
+public class OtterRenderer extends MobRenderer<Otter,OtterModel> {
+    public OtterRenderer(EntityRendererProvider.Context context) {
+        super(context, new OtterModel(context.bakeLayer(Ottercraft.OTTER_LAYER)), 0.5f);
         this.shadowRadius = 0.7F; //change 0.7 to the desired shadow size.
     }
     

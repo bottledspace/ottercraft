@@ -1,5 +1,7 @@
 package ca.otterspace.ottercraft;
 
+import ca.otterspace.anim.Animation;
+import ca.otterspace.anim.Animations;
 import com.google.common.collect.ImmutableSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -10,6 +12,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -20,8 +23,6 @@ import org.apache.logging.log4j.Logger;
 
 public class OttercraftCommon implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
-
-    
     
     @Override
     public void onInitialize() {
@@ -31,9 +32,15 @@ public class OttercraftCommon implements ModInitializer {
                         .clientTrackingRange(4)
                         .updateInterval(1)
                         .build(Ottercraft.OTTER_ID.toString()));
-    
+        Ottercraft.GIANT_OTTER = Registry.register(Registry.ENTITY_TYPE, Ottercraft.GIANT_OTTER_ID,
+                EntityType.Builder.of(GiantOtter::new, MobCategory.CREATURE)
+                        .sized(0.9f, 1.0f)
+                        .clientTrackingRange(4)
+                        .updateInterval(1)
+                        .build(Ottercraft.GIANT_OTTER_ID.toString()));
         FabricDefaultAttributeRegistry.register(Ottercraft.OTTER, Otter.createAttributes());
-        
+        FabricDefaultAttributeRegistry.register(Ottercraft.GIANT_OTTER, Mob.createMobAttributes());
+    
         BiomeModifications.addSpawn((BiomeSelectionContext bsc) -> {
             Biome biome = bsc.getBiome();
             if (biome != null)

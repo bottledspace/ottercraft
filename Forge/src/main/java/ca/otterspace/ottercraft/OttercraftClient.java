@@ -1,8 +1,9 @@
 package ca.otterspace.ottercraft;
 
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -30,7 +33,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import software.bernie.geckolib3.GeckoLib;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -40,13 +42,9 @@ public class OttercraftClient {
 
 
     public OttercraftClient() {
-        
-        
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
-
-        GeckoLib.initialize();
         
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -56,13 +54,15 @@ public class OttercraftClient {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-
         EntityRenderers.register(Ottercraft.OTTER, OtterRenderer::new);
+    
+        ForgeHooksClient.registerLayerDefinition(Ottercraft.GIANT_OTTER_LAYER, GiantOtterModel::getTexturedModelData);
+        ForgeHooksClient.registerLayerDefinition(Ottercraft.OTTER_LAYER, OtterModel::getTexturedModelData);
+    
         SpawnPlacements.register(Ottercraft.OTTER, SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkMobSpawnRules);
     }
-
-
+    
     @SubscribeEvent
     public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
         Ottercraft.OTTER_SQUEAK.setRegistryName(Ottercraft.OTTER_SQUEAK_ID);
@@ -87,16 +87,10 @@ public class OttercraftClient {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        IForgeRegistry<EntityType<?>> registry = event.getRegistry();
-        Ottercraft.OTTER = new EntityType<Otter>(Otter::new,
-                MobCategory.CREATURE, true,
-                true, false, false, ImmutableSet.of(),
-                EntityDimensions.fixed(0.9f, 1.0f), 4, 1);
-    
         Ottercraft.OTTER.setRegistryName(Ottercraft.OTTER_ID);
-        registry.register(Ottercraft.OTTER);
+        event.getRegistry().register(Ottercraft.OTTER);
     }
-
+    
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
         event.put(Ottercraft.OTTER, Otter.createAttributes().build());
@@ -104,6 +98,14 @@ public class OttercraftClient {
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
+        // This needs to be created here rather than in the registerEntities method,
+        // since the spawn eggs require the type to be defined, and items are created
+        // before entity types.
+        Ottercraft.OTTER = new EntityType<Otter>(Otter::new,
+                MobCategory.CREATURE, true,
+                true, false, false, ImmutableSet.of(),
+                EntityDimensions.fixed(0.9f, 1.0f), 4, 1);
+        
         Ottercraft.OTTER_SPAWN_EGG = new SpawnEggItem(Ottercraft.OTTER, 0x996633, 0x663300, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
         Ottercraft.OTTER_SPAWN_EGG.setRegistryName(Ottercraft.OTTER_SPAWN_EGG_ID);
         event.getRegistry().register(Ottercraft.OTTER_SPAWN_EGG);

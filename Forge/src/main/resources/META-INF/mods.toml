@@ -56,9 +56,3 @@ Adds otters to Minecraft!
     versionRange="[1.18,1.19)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.ottercraft]]
-   modId="geckolib3"
-   mandatory=true
-   versionRange="[3.0.0,)"
-   ordering="NONE"
-   side="CLIENT"
