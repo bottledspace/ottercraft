@@ -173,6 +173,11 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     }
     
     @Override
+    public int getMaxHeadYRot() {
+        return 37;
+    }
+    
+    @Override
     protected float getSoundVolume() {
         return 0.4F;
     }

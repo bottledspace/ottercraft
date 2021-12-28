@@ -70,7 +70,7 @@ public class Geometry {
                             Mth.DEG_TO_RAD * bone.rotation.x(), Mth.DEG_TO_RAD * bone.rotation.y(), Mth.DEG_TO_RAD * bone.rotation.z());
                 } else
                     partPose = PartPose.offsetAndRotation(
-                            -bone.pivot.x(), bone.pivot.y()+24, -bone.pivot.z(),
+                            -bone.pivot.x(), bone.pivot.y(), -bone.pivot.z(),
                             Mth.DEG_TO_RAD * bone.rotation.x(), Mth.DEG_TO_RAD * bone.rotation.y(), Mth.DEG_TO_RAD * bone.rotation.z());
                 idlePose.poseMap.put(childName, partPose);
                 

@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
@@ -61,10 +62,7 @@ public class OtterModel extends EntityModel<Otter> {
         headPitch *= Mth.DEG_TO_RAD;
         headYaw = (float) Mth.clamp(headYaw, -Math.PI/4,Math.PI/4);
     
-        if (entity.animationController.getAnimation().equals("animation.otter.beg")) {
-            head.xRot = (float)Math.PI/2f + headPitch;
-            head.zRot = headYaw;
-        } else {
+        if (!entity.animationController.getAnimation().equals("animation.otter.beg")) {
             head.xRot = headPitch;
             head.yRot = headYaw;
         }
@@ -74,7 +72,7 @@ public class OtterModel extends EntityModel<Otter> {
             double dx = entity.getDeltaMovement().x;
             double dz = entity.getDeltaMovement().z;
             float angle = (float) (Mth.atan2(entity.getDeltaMovement().y, Mth.sqrt((float)(dx * dx + dz * dz))));
-            angle = (float) Mth.clamp(angle, -Math.PI / 4.0, Math.PI / 4.0);
+            angle = (float) Mth.clamp(angle, -Math.PI / 8.0, Math.PI / 8.0);
             root.xRot = -angle;
         }
     
@@ -87,12 +85,18 @@ public class OtterModel extends EntityModel<Otter> {
         else
             wagAmplitude = 0.05f;
         this.animateTail(0, Mth.cos(animationProgress * 0.3331f) * wagAmplitude);
-        
     }
     
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {
-        model.render(poseStack, vertexConsumer, i, j, f, g, h, k);
+    public void renderToBuffer(PoseStack stack, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {
+        stack.pushPose();
+        stack.translate(0,1.5,0);  // Cancel out the translation added by Minecraft
+        if (this.young)
+            stack.scale(0.3f, 0.3f, 0.3f);
+        else
+            stack.scale(0.6f, 0.6f, 0.6f);
+        model.render(stack, vertexConsumer, i, j, f, g, h, k);
+        stack.popPose();
     }
     
     public static LayerDefinition getTexturedModelData() {
