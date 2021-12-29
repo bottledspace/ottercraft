@@ -373,37 +373,39 @@ public class EntityOtter extends TameableEntity implements IAnimatable, ISemiAqu
     @Override
     public ActionResultType mobInteract(PlayerEntity playerIn, Hand hand) {
         ItemStack itemstack = playerIn.getItemInHand(hand);
-        if (itemstack.isEmpty() && this.isTame()) {
-            // If we are already tame, take this as a command to sit.
-            boolean shouldSit = !this.isInSittingPose();
-            this.setOrderedToSit(shouldSit);
+        if (itemstack.isEmpty()) {
+            if (this.isTame()) {
+                // If we are already tame, take this as a command to sit.
+                boolean shouldSit = !this.isInSittingPose();
+                this.setOrderedToSit(shouldSit);
+                return ActionResultType.SUCCESS;
+            } else
+                return super.mobInteract(playerIn, hand);
+        }
+
+        Item item = itemstack.getItem();
+        if (!this.isFood(itemstack))
+            return super.mobInteract(playerIn, hand);
+
+        // If not already tame and offered food, become tame and sit.
+        if (!this.isTame()) {
+            if (!playerIn.abilities.instabuild)
+                itemstack.shrink(1);
+            super.tame(playerIn);
+            this.navigation.stop();
+            this.setTarget(null);
+            this.setOrderedToSit(true);
+
+            // Probably broadcasts that we are now tame?
+            this.level.broadcastEntityEvent(this, (byte)7);
             return ActionResultType.SUCCESS;
 
-        } else if (this.isFood(itemstack)) {
-            if (!this.isTame()) {
-                // If not already tame and offered food, become tame and sit.
-
+        // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
+        } else if (this.getHealth() < this.getMaxHealth()) {
+            if (!playerIn.abilities.instabuild)
                 itemstack.shrink(1);
-                super.tame(playerIn);
-                this.navigation.stop();
-                this.setTarget(null);
-                this.setOrderedToSit(true);
-
-                // Probably broadcasts that we are now tame?
-                this.level.broadcastEntityEvent(this, (byte)7);
-
-                return ActionResultType.SUCCESS;
-            } else {
-                // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
-
-                if (this.getHealth() < this.getMaxHealth()) {
-                    if (!playerIn.abilities.instabuild) {
-                        itemstack.shrink(1);
-                    }
-                    this.heal((float)itemstack.getItem().getFoodProperties().getNutrition());
-                    return ActionResultType.CONSUME;
-                }
-            }
+            this.heal((float)item.getFoodProperties().getNutrition());
+            return ActionResultType.CONSUME;
         }
         return super.mobInteract(playerIn, hand);
     }
