@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Model {
-    Multimap<String, String> hierarchy;
+    //Multimap<String, String> hierarchy;
     Map<String, ModelPart> partMap = Maps.newHashMap();
     Pose idlePose = new Pose();
     

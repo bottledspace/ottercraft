@@ -29,6 +29,7 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -161,7 +162,6 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData edat, CompoundTag nbt) {
         this.setAirSupply(this.getMaxAirSupply());
-        //this.xRot = 0.0F;
         return super.finalizeSpawn(level, difficulty, reason, edat, nbt);
     }
     
@@ -338,10 +338,13 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
                 this.setOrderedToSit(shouldSit);
                 return InteractionResult.SUCCESS;
             }
-        } else if (this.isFood(itemstack)) {
+            return super.mobInteract(playerIn, hand);
+        }
+        Item item = itemstack.getItem();
+        
+        if (this.isFood(itemstack)) {
             if (!this.isTame()) {
                 // If not already tame and offered food, become tame and sit.
-                
                 itemstack.shrink(1);
                 super.tame(playerIn);
                 this.navigation.stop();
@@ -350,13 +353,11 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
                 
                 // Probably broadcasts that we are now tame?
                 this.level.broadcastEntityEvent(this, (byte)7);
-                
                 return InteractionResult.SUCCESS;
             } else {
                 // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
-                
                 if (this.getHealth() < this.getMaxHealth()) {
-                    float nutrition = (float)itemstack.getItem().getFoodProperties().getNutrition();
+                    float nutrition = (float)item.getFoodProperties().getNutrition();
                     
                     if (!playerIn.getAbilities().instabuild) {
                         itemstack.shrink(1);
@@ -364,6 +365,15 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
                     this.heal(nutrition);
                     return InteractionResult.CONSUME;
                 }
+            }
+        } else if ((item instanceof DyeItem) && this.isTame()) {
+            DyeColor color = ((DyeItem)item).getDyeColor();
+            if (color != this.getCollarColor()) {
+                this.setCollarColor(color);
+                if (!playerIn.getAbilities().instabuild) {
+                    itemstack.shrink(1);
+                }
+                return InteractionResult.SUCCESS;
             }
         }
         return super.mobInteract(playerIn, hand);

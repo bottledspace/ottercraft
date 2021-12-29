@@ -177,7 +177,7 @@ public class Geometry {
     
     public Model compileModel(ModelPart root) {
         Model model = new Model();
-        model.hierarchy = hierarchy;
+        //model.hierarchy = hierarchy;
         model.idlePose = idlePose;
         Deque<Map.Entry<String,ModelPart>> pending = new ArrayDeque<>();
         pending.push(new ImmutablePair<>("_root", root));
