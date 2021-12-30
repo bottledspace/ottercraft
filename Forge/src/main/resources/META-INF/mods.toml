@@ -23,9 +23,9 @@ version="${file.jarVersion}" #mandatory
  # A display name for the mod
 displayName="Ottercraft" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
-#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+updateJSONURL="https://raw.githubusercontent.com/astronotter/ottercraft/1.18/update.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+displayURL="https://www.curseforge.com/minecraft/mc-mods/ottercraft" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="ottercraft.png" #optional
 # A text field displayed in the mod UI

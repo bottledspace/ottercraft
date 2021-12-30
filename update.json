@@ -1,0 +1,6 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/ottercraft",
+  "1.18": {
+    "1.1.9": "Dye harnesses different colors!\nBaby otters are now small.\nNo longer requires Geckolib.",
+  }
+}

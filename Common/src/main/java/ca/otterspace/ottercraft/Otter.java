@@ -1,6 +1,7 @@
 package ca.otterspace.ottercraft;
 
 import ca.otterspace.ottercraft.goals.*;
+import ca.otterspace.skeletal.AnimationController;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -55,7 +56,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     };
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
-    public ca.otterspace.skeletal.AnimationController animationController = new ca.otterspace.skeletal.AnimationController();
+    public AnimationController animationController = new ca.otterspace.skeletal.AnimationController();
     
     public Otter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
@@ -328,45 +329,33 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
     }
     
-    @Override
-    public InteractionResult mobInteract(Player playerIn, InteractionHand hand) {
+    protected InteractionResult mobInteractTame(Player playerIn, InteractionHand hand) {
         ItemStack itemstack = playerIn.getItemInHand(hand);
         if (itemstack.isEmpty()) {
-            if (this.isTame()) {
-                // If we are already tame, take this as a command to sit.
-                boolean shouldSit = !this.isInSittingPose();
-                this.setOrderedToSit(shouldSit);
-                return InteractionResult.SUCCESS;
-            }
-            return super.mobInteract(playerIn, hand);
+            // Command to sit.
+            boolean shouldSit = !this.isInSittingPose();
+            this.setOrderedToSit(shouldSit);
+            return InteractionResult.SUCCESS;
         }
+    
         Item item = itemstack.getItem();
-        
         if (this.isFood(itemstack)) {
-            if (!this.isTame()) {
-                // If not already tame and offered food, become tame and sit.
-                itemstack.shrink(1);
-                super.tame(playerIn);
-                this.navigation.stop();
-                this.setTarget(null);
-                this.setOrderedToSit(true);
-                
-                // Probably broadcasts that we are now tame?
-                this.level.broadcastEntityEvent(this, (byte)7);
-                return InteractionResult.SUCCESS;
-            } else {
-                // If already tame and offered food, heal if hurt. Otherwise fall through so that we may breed.
-                if (this.getHealth() < this.getMaxHealth()) {
-                    float nutrition = (float)item.getFoodProperties().getNutrition();
-                    
-                    if (!playerIn.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                    }
-                    this.heal(nutrition);
-                    return InteractionResult.CONSUME;
+            // If already tame and offered food, heal if hurt.
+            if (this.getHealth() < this.getMaxHealth()) {
+                float nutrition = (float)item.getFoodProperties().getNutrition();
+        
+                if (!playerIn.getAbilities().instabuild) {
+                    itemstack.shrink(1);
                 }
-            }
+                this.heal(nutrition);
+                return InteractionResult.CONSUME;
+                
+            // Otherwise allow breeding
+            } else
+                return super.mobInteract(playerIn, hand);
+            
         } else if ((item instanceof DyeItem) && this.isTame()) {
+            // Dye the harness color
             DyeColor color = ((DyeItem)item).getDyeColor();
             if (color != this.getCollarColor()) {
                 this.setCollarColor(color);
@@ -376,7 +365,36 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
                 return InteractionResult.SUCCESS;
             }
         }
-        return super.mobInteract(playerIn, hand);
+        return InteractionResult.FAIL;
+    }
+    
+    protected InteractionResult mobInteractWild(Player playerIn, InteractionHand hand) {
+        ItemStack itemstack = playerIn.getItemInHand(hand);
+        if (itemstack.isEmpty())
+            return InteractionResult.FAIL;
+    
+        if (this.isFood(itemstack)) {
+            // If not already tame and offered food, become tame and sit.
+            if (!playerIn.getAbilities().instabuild)
+                itemstack.shrink(1);
+            super.tame(playerIn);
+            this.navigation.stop();
+            this.setTarget(null);
+            this.setOrderedToSit(true);
+    
+            // Probably broadcasts that we are now tame?
+            this.level.broadcastEntityEvent(this, (byte)7);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.FAIL;
+    }
+    
+    @Override
+    public InteractionResult mobInteract(Player playerIn, InteractionHand hand) {
+        if (isTame())
+            return mobInteractTame(playerIn, hand);
+        else
+            return mobInteractWild(playerIn, hand);
     }
     
     @Override
