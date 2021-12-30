@@ -55,7 +55,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     };
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private UUID persistentAngerTarget;
-    public ca.otterspace.anim.AnimationController animationController = new ca.otterspace.anim.AnimationController();
+    public ca.otterspace.skeletal.AnimationController animationController = new ca.otterspace.skeletal.AnimationController();
     
     public Otter(EntityType<? extends TamableAnimal> type, Level worldIn) {
         super(type, worldIn);
@@ -77,7 +77,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(BEGGING, false);
-        this.entityData.define(COLLAR_COLOR, DyeColor.RED.getId());
+        this.entityData.define(COLLAR_COLOR, DyeColor.YELLOW.getId());
         this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
     }
     
@@ -261,7 +261,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         Vec3 movement = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z());
         if (isInWater())
             animationController.setAnimation("animation.otter.slide");
-        else if (movement.dot(movement) > 0.015f*0.015f)
+        else if (movement.dot(movement) > 0.02f*0.02f)
             animationController.setAnimation("animation.otter.run");
         else if (isInSittingPose())
             animationController.setAnimation("animation.otter.sit");
@@ -391,6 +391,9 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
-        return Ottercraft.OTTER.create(world);
+        Otter otter = Ottercraft.OTTER.create(world);
+        if (this.isTame() || (parent != null && parent instanceof Otter && ((Otter)parent).isTame()))
+            otter.setTame(true);
+        return otter;
     }
 }

@@ -1,4 +1,4 @@
-package ca.otterspace.anim;
+package ca.otterspace.skeletal;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,11 +15,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 
 public class Animations {
     Map<String, Animation> animMap = new HashMap<>();
+    
+    public Animation getAnimation(String name) {
+        return animMap.get(name);
+    }
     
     protected LinearCurve parseCurve(JsonElement channel) {
         if (channel == null)
@@ -48,13 +51,13 @@ public class Animations {
         for (Map.Entry<String, JsonElement> animationEntry : animationsElement.entrySet()) {
             JsonObject animationObject = animationEntry.getValue().getAsJsonObject();
             String animationName = animationEntry.getKey();
-    
+            
             Animation animation = new Animation();
             JsonObject bones = animationObject.get("bones").getAsJsonObject();
             for (Map.Entry<String,JsonElement> boneEntry : bones.entrySet()) {
                 String boneName = boneEntry.getKey();
                 JsonObject channel = boneEntry.getValue().getAsJsonObject();
-    
+                
                 LinearCurve positionCurve = parseCurve(channel.get("position"));
                 if (positionCurve != null) {
                     positionCurve.points.replaceAll((key, value) -> {
@@ -72,7 +75,7 @@ public class Animations {
                     animation.rotationCurves.put(boneName, rotationCurve);
                 }
             }
-    
+            
             if (animationObject.get("loop") != null)
                 animation.loop = animationObject.get("loop").getAsBoolean();
             if (animationObject.get("animation_length") != null)
@@ -82,20 +85,16 @@ public class Animations {
     }
     
     public static Animations loadAnimations(ResourceLocation location) {
+        Animations animations = new Animations();
         try {
             ResourceManager manager = Minecraft.getInstance().getResourceManager();
             InputStream stream = manager.getResource(location).getInputStream();
             InputStreamReader reader = new InputStreamReader(stream);
             JsonElement root = JsonParser.parseReader(reader);
-            Animations loader = new Animations();
-            loader.parseAnimations(root);
-            return loader;
+            animations.parseAnimations(root);
+            return animations;
         } catch (IOException ex) {
             return null;
         }
-    }
-    
-    public Animation getAnimation(String name) {
-        return animMap.get(name);
     }
 }

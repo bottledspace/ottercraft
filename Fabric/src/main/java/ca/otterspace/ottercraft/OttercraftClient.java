@@ -14,9 +14,6 @@ public class OttercraftClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(Ottercraft.OTTER, OtterRenderer::new);
-        EntityRendererRegistry.register(Ottercraft.GIANT_OTTER, GiantOtterRenderer::new);
-        EntityModelLayerRegistry.registerModelLayer(Ottercraft.GIANT_OTTER_LAYER, GiantOtterModel::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(Ottercraft.OTTER_LAYER, OtterModel::getTexturedModelData);
     
         Registry.register(Registry.SOUND_EVENT, Ottercraft.OTTER_SQUEAK_ID, Ottercraft.OTTER_SQUEAK);
         Registry.register(Registry.SOUND_EVENT, Ottercraft.OTTER_ANGRY_ID, Ottercraft.OTTER_ANGRY);

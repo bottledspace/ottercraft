@@ -1,7 +1,8 @@
-package ca.otterspace.anim;
+package ca.otterspace.skeletal;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.PartPose;
 
@@ -28,9 +29,7 @@ public class Animation {
             Vector3f rotation = Vector3f.ZERO;
             if (rotationCurves.get(boneName) != null)
                 rotation = rotationCurves.get(boneName).at(time);
-            pose.poseMap.put(boneName, PartPose.offsetAndRotation(
-                    position.x(), position.y(), position.z(),
-                    rotation.x(), rotation.y(), rotation.z()));
+            pose.poseMap.put(boneName, new Pose.LocRotScale(position, rotation));
         }
         return pose;
     }

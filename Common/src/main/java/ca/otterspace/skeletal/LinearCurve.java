@@ -1,4 +1,4 @@
-package ca.otterspace.anim;
+package ca.otterspace.skeletal;
 
 import com.mojang.math.Vector3f;
 

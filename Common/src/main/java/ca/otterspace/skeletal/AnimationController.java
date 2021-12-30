@@ -1,4 +1,4 @@
-package ca.otterspace.anim;
+package ca.otterspace.skeletal;
 
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -35,12 +35,13 @@ public class AnimationController {
         }
     }
     
-    public void apply(Model model, Animations animations) {
+    public Pose apply(Model model, Animations animations) {
         float dt = Minecraft.getInstance().getFrameTime();
         if (next != null && last != null) {
             Pose a = animations.getAnimation(last.left).at(last.right);
             Pose b = animations.getAnimation(next.left).at(next.right);
-            model.applyPose(Pose.lerpPose(a, b, dt));
+            return Pose.lerpPose(a, b, dt);
         }
+        else return new Pose();
     }
 }

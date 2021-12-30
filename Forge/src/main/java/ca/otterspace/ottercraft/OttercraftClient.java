@@ -55,10 +55,7 @@ public class OttercraftClient {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         EntityRenderers.register(Ottercraft.OTTER, OtterRenderer::new);
-    
-        ForgeHooksClient.registerLayerDefinition(Ottercraft.GIANT_OTTER_LAYER, GiantOtterModel::getTexturedModelData);
-        ForgeHooksClient.registerLayerDefinition(Ottercraft.OTTER_LAYER, OtterModel::getTexturedModelData);
-    
+        
         SpawnPlacements.register(Ottercraft.OTTER, SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkMobSpawnRules);
     }
