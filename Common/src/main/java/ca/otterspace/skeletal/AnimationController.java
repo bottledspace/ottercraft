@@ -35,7 +35,7 @@ public class AnimationController {
         }
     }
     
-    public Pose apply(Model model, Animations animations) {
+    public Pose apply(Animations animations) {
         float dt = Minecraft.getInstance().getFrameTime();
         if (next != null && last != null) {
             Pose a = animations.getAnimation(last.left).at(last.right);

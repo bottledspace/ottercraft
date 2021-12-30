@@ -35,7 +35,7 @@ public class OtterModel extends EntityModel<Otter> {
     @Override
     public void setupAnim(Otter entity, float f, float g, float animationProgress, float headYaw, float headPitch) {
         // Set current animation frame
-        model.applyPose(entity.animationController.apply(model, animations));
+        model.applyPose(entity.animationController.apply(animations));
     
         // Give baby otters larger heads
         if (entity.isBaby())
