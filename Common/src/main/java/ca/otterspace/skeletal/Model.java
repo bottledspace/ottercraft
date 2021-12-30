@@ -20,14 +20,7 @@ import java.util.Map;
 public class Model {
     Map<String, Bone> boneMap = Maps.newHashMap();
     Bone root = new Bone();
-    
-    public Bone getBone(String name) {
-        return boneMap.get(name);
-    }
-    
-    public void render(Pose pose, PoseStack mats, VertexConsumer vbuf, int i, int j, float f, float g, float h, float k) {
-        root.render(pose, mats, vbuf, i,j,f,g,h,k);
-    }
+
     
     class RawCube {
         int[] uv;
@@ -112,6 +105,16 @@ public class Model {
         }
     }
     
+    public void applyPose(Pose pose) {
+        for (Map.Entry<String, Bone> entry : boneMap.entrySet()) {
+            LocRot locrot = pose.getLocal(entry.getKey());
+            if (locrot != null)
+                entry.getValue().locrot = locrot;
+            else
+                entry.getValue().locrot = new LocRot();
+        }
+    }
+    
     public static Model loadGeometry(ResourceLocation location) {
         Model result = new Model();
         try {
@@ -123,5 +126,13 @@ public class Model {
         } catch (IOException ex) {
             return null;
         }
+    }
+    
+    public Bone getBone(String name) {
+        return boneMap.get(name);
+    }
+    
+    public void render(PoseStack mats, VertexConsumer vbuf, int i, int j, float f, float g, float h, float k) {
+        root.render(mats, vbuf, i,j,f,g,h,k);
     }
 }

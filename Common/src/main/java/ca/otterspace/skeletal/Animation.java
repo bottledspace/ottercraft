@@ -29,7 +29,7 @@ public class Animation {
             Vector3f rotation = Vector3f.ZERO;
             if (rotationCurves.get(boneName) != null)
                 rotation = rotationCurves.get(boneName).at(time);
-            pose.poseMap.put(boneName, new Pose.LocRotScale(position, rotation));
+            pose.poseMap.put(boneName, new LocRot(position, rotation));
         }
         return pose;
     }
