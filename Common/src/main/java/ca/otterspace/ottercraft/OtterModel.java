@@ -49,7 +49,7 @@ public class OtterModel extends EntityModel<Otter> {
         harness.getChild(0).color = new Vector4f(color[0], color[1], color[2], 1f);
         
         // Avoid tail clipping through boat
-        tail.visible = !entity.isPassenger();
+        tail.visible = entity.isBaby() || !entity.isPassenger();
     
         if (Minecraft.getInstance().isPaused())
             return;
