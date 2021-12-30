@@ -2,6 +2,7 @@ package ca.otterspace.ottercraft;
 
 import ca.otterspace.ottercraft.goals.*;
 import ca.otterspace.skeletal.AnimationController;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -330,6 +331,9 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     }
     
     protected InteractionResult mobInteractTame(Player playerIn, InteractionHand hand) {
+        if (!isOwnedBy(playerIn))
+            return InteractionResult.PASS;
+        
         ItemStack itemstack = playerIn.getItemInHand(hand);
         if (itemstack.isEmpty()) {
             // Command to sit.
@@ -365,13 +369,13 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
                 return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
     
     protected InteractionResult mobInteractWild(Player playerIn, InteractionHand hand) {
         ItemStack itemstack = playerIn.getItemInHand(hand);
         if (itemstack.isEmpty())
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
     
         if (this.isFood(itemstack)) {
             // If not already tame and offered food, become tame and sit.
@@ -386,7 +390,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
             this.level.broadcastEntityEvent(this, (byte)7);
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
     
     @Override
@@ -410,8 +414,21 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
         Otter otter = Ottercraft.OTTER.create(world);
-        if (this.isTame() || (parent != null && parent instanceof Otter && ((Otter)parent).isTame()))
-            otter.setTame(true);
+        
+        // If either parent is owned by a player, they own the offspring
+        for (LivingEntity parentEntity : ImmutableList.of(this, parent)) {
+            if (!(parentEntity instanceof Otter))
+                continue;  // Shouldn't happen??
+            Otter parentOtter = (Otter)parentEntity;
+            if (!parentOtter.isTame())
+                continue;  // Otter is wild
+            if (!(parentOtter.getOwner() instanceof Player))
+                continue;  // Otter isn't owned by a player
+            
+            Player player = (Player)parentOtter.getOwner();
+            otter.tame(player);
+            break;
+        }
         return otter;
     }
 }
