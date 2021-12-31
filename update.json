@@ -3,5 +3,9 @@
   "1.18": {
     "1.1.9": "Dye harnesses different colors!\nBaby otters are now small.\nNo longer requires Geckolib.",
     "1.1.10": "Small bug fixes."
+  },
+  "promos": {
+    "1.18-latest": "1.1.10",
+    "1.18-recommended": "1.1.10"
   }
 }
