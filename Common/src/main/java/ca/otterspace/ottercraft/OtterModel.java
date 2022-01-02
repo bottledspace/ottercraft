@@ -34,24 +34,18 @@ public class OtterModel extends EntityModel<Otter> {
     }
     
     @Override
+    public void prepareMobModel(Otter otter, float $$1, float $$2, float $$3) {
+        // Tint harness (tamed otters only)
+        harness.visible = otter.isTame();
+        float[] color = otter.getCollarColor().getTextureDiffuseColors();
+        harness.children.get(0).color = new Vector4f(color[0], color[1], color[2], 1f);
+    }
+    
+    @Override
     public void setupAnim(Otter entity, float f, float g, float animationProgress, float headYaw, float headPitch) {
         // Set current animation frame
         model.applyPose(entity.animationController.apply(animations));
-    
-        // Give baby otters larger heads
-        if (entity.isBaby())
-            head.scale.mul(1.25f,1.25f,1.25f);
-        else
-            head.scale.set(1f,1f,1f);
         
-        // Tint harness (tamed otters only)
-        harness.visible = entity.isTame();
-        float[] color = entity.getCollarColor().getTextureDiffuseColors();
-        harness.children.get(0).color = new Vector4f(color[0], color[1], color[2], 1f);
-        
-        // Avoid tail clipping through boat
-        tail.visible = entity.isBaby() || !entity.isPassenger();
-    
         if (Minecraft.getInstance().isPaused())
             return;
     
@@ -88,10 +82,19 @@ public class OtterModel extends EntityModel<Otter> {
     public void renderToBuffer(PoseStack stack, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {
         stack.pushPose();
         stack.translate(0,1.5,0);  // Cancel out the translation added by Minecraft
-        if (this.young)
+    
+        // Give baby otters larger heads, smaller bodies.
+        if (this.young) {
             stack.scale(0.3f, 0.3f, 0.3f);
-        else
+            head.scale.set(1.25f, 1.25f, 1.25f);
+        } else {
             stack.scale(0.6f, 0.6f, 0.6f);
+            head.scale.set(1f, 1f, 1f);
+        }
+        
+        // Avoid tail clipping through boat
+        tail.visible = this.young || !this.riding;
+        
         model.render(stack, vertexConsumer, i,j,f,g,h,k);
         stack.popPose();
     }
