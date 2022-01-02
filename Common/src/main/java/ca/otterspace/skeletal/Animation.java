@@ -2,6 +2,7 @@ package ca.otterspace.skeletal;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
 import java.util.Map;
@@ -27,7 +28,14 @@ public class Animation {
             Vector3f rotation = Vector3f.ZERO;
             if (rotationCurves.get(boneName) != null)
                 rotation = rotationCurves.get(boneName).at(time);
-            pose.poseMap.put(boneName, new LocRot(position, rotation));
+            
+            // Convert Euler angles to Quaternion
+            Quaternion quat = Quaternion.ONE.copy();
+            quat.mul(Vector3f.ZP.rotation(rotation.z()));
+            quat.mul(Vector3f.YP.rotation(rotation.y()));
+            quat.mul(Vector3f.XP.rotation(rotation.x()));
+            
+            pose.poseMap.put(boneName, new LocRot(position, quat));
         }
         return pose;
     }

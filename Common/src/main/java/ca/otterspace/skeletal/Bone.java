@@ -3,6 +3,7 @@ package ca.otterspace.skeletal;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.model.geom.ModelPart;
@@ -15,16 +16,11 @@ public class Bone {
     public Vector4f color = new Vector4f(1,1,1,1);
     public Vector3f scale = new Vector3f(1,1,1);
     public LocRot locrot = new LocRot();
-    
-    String name = null;
-    Bone parent = null;
-    List<Bone> children = new ArrayList<>();
-    ModelPart.Cube cube = null;
-    Matrix4f transform = Matrix4f.createScaleMatrix(1,1,1);
-    
-    public Bone getChild(int i) {
-        return children.get(i);
-    }
+    public String name = null;
+    public Bone parent = null;
+    public List<Bone> children = new ArrayList<>();
+    public ModelPart.Cube cube = null;
+    public Matrix4f transform = Matrix4f.createScaleMatrix(1,1,1);
     
     public void render(PoseStack matstack, VertexConsumer vbuf, int i, int j, float f, float g, float h, float k) {
         if (!visible)

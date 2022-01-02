@@ -6,6 +6,7 @@ import ca.otterspace.skeletal.Model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,7 @@ public class OtterModel extends EntityModel<Otter> {
         for (String name : ImmutableList.of("tail", "tail1", "tail2", "tail3", "tail4", "tail5")) {
             Bone tailBone = model.getBone(name);
             if (tailBone != null)
-                tailBone.locrot.rotate(rotation);
+                tailBone.locrot.rotation.mul(Quaternion.fromXYZ(rotation));
             rotation.mul(0.5f);
         }
     }
@@ -46,7 +47,7 @@ public class OtterModel extends EntityModel<Otter> {
         // Tint harness (tamed otters only)
         harness.visible = entity.isTame();
         float[] color = entity.getCollarColor().getTextureDiffuseColors();
-        harness.getChild(0).color = new Vector4f(color[0], color[1], color[2], 1f);
+        harness.children.get(0).color = new Vector4f(color[0], color[1], color[2], 1f);
         
         // Avoid tail clipping through boat
         tail.visible = entity.isBaby() || !entity.isPassenger();
@@ -58,7 +59,7 @@ public class OtterModel extends EntityModel<Otter> {
         headPitch *= Mth.DEG_TO_RAD;
         headYaw = (float) Mth.clamp(headYaw, -Math.PI/4,Math.PI/4);
         if (!entity.animationController.getAnimation().equals("animation.otter.beg")) {
-            head.locrot.rotate(new Vector3f(headPitch, headYaw, 0));
+            head.locrot.rotation.mul(Quaternion.fromXYZ(headPitch, headYaw, 0));
         }
     
         // Tilt body up and down visually when in water
@@ -68,7 +69,7 @@ public class OtterModel extends EntityModel<Otter> {
             float angle = (float) (Mth.atan2(entity.getDeltaMovement().y, Mth.sqrt((float)(dx * dx + dz * dz))));
             angle = (float) Mth.clamp(angle, -Math.PI / 8.0, Math.PI / 8.0);
             
-            root.locrot.rotate(new Vector3f(-angle,0,0));
+            root.locrot.rotation.mul(Quaternion.fromXYZ(-angle,0,0));
         }
     
         // Wag tail
