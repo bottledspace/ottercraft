@@ -1,16 +1,10 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        maven {
-            name = 'Sponge Snapshots'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
-
-rootProject.name = 'Ottercraft'
-include("Common", "Fabric", "Forge")
