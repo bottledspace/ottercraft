@@ -120,7 +120,8 @@ public class Model {
         try {
             InputStream stream = Minecraft.getInstance().getResourceManager().getResource(location).getInputStream();
             InputStreamReader reader = new InputStreamReader(stream);
-            JsonElement root = JsonParser.parseReader(reader);
+            JsonParser parser = new JsonParser();
+            JsonElement root = parser.parse(reader);
             result.parseGeometry(root);
             return result;
         } catch (IOException ex) {

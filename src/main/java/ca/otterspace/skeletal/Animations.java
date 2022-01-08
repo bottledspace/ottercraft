@@ -90,7 +90,8 @@ public class Animations {
             ResourceManager manager = Minecraft.getInstance().getResourceManager();
             InputStream stream = manager.getResource(location).getInputStream();
             InputStreamReader reader = new InputStreamReader(stream);
-            JsonElement root = JsonParser.parseReader(reader);
+            JsonParser parser = new JsonParser();
+            JsonElement root = parser.parse(reader);
             animations.parseAnimations(root);
             return animations;
         } catch (IOException ex) {

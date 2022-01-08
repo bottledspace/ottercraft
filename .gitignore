@@ -20,6 +20,6 @@ build
 # other
 eclipse
 run
-*.jar
-Fabric/libs/*
-Forge/libs/*
+
+# Files from Forge MDK
+forge*changelog.txt
