@@ -1,6 +1,5 @@
 package ca.otterspace.ottercraft;
 
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +11,7 @@ public class Ottercraft {
     public static final Logger LOGGER = LogManager.getLogger();
     
     public static final String MODID = "ottercraft";
+    
     
     public static ResourceLocation OTTER_SQUEAK_ID = new ResourceLocation(Ottercraft.MODID, "otter_squeak");
     public static ResourceLocation OTTER_ANGRY_ID = new ResourceLocation(Ottercraft.MODID, "otter_angry");

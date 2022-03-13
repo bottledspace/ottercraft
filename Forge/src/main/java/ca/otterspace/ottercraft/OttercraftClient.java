@@ -25,7 +25,9 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,14 +36,17 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 @Mod(Ottercraft.MODID)
 public class OttercraftClient {
     public static final Logger LOGGER = LogManager.getLogger();
 
-
     public OttercraftClient() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
+        
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
@@ -50,7 +55,6 @@ public class OttercraftClient {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-   
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -73,12 +77,12 @@ public class OttercraftClient {
         Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
         if (biome == null)
             return;
-        else if (biome.getBiomeCategory() == Biome.BiomeCategory.RIVER)
+        else if (Arrays.asList(Config.COMMON.otterSpawnBiomes.get().split(",")).contains(biome.toString()))
             event.getSpawns().getSpawner(MobCategory.CREATURE)
-                    .add(new MobSpawnSettings.SpawnerData(Ottercraft.OTTER, 200, 3, 5));
-        else if (biome.getBiomeCategory() == Biome.BiomeCategory.SWAMP)
-            event.getSpawns().getSpawner(MobCategory.CREATURE)
-                    .add(new MobSpawnSettings.SpawnerData(Ottercraft.OTTER, 200, 3, 5));
+                    .add(new MobSpawnSettings.SpawnerData(Ottercraft.OTTER,
+                            Config.COMMON.otterSpawnWeight.get(),
+                            Config.COMMON.otterSpawnMin.get(),
+                            Config.COMMON.otterSpawnMax.get()));
     }
 
 
