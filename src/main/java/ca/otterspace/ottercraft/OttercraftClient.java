@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 import static ca.otterspace.ottercraft.Ottercraft.OTTER;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(Ottercraft.MODID)
 public class OttercraftClient {
     public static final Logger LOGGER = LogManager.getLogger();
@@ -45,13 +45,23 @@ public class OttercraftClient {
         
         MinecraftForge.EVENT_BUS.register(this);
     }
+    
+    private static void registerEntityTypes() {
+        if (OTTER != null)
+            return;
+        OTTER = new EntityType<>(EntityOtter::new,
+            EntityClassification.AMBIENT.CREATURE, true,
+            true, false, false, ImmutableSet.of(),
+            EntitySize.fixed(0.9f, 1.0f), 4, 1);
+    }
 
     private void setup(final FMLCommonSetupEvent event) {
    
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        RenderingRegistry.<Otter>registerEntityRenderingHandler(OTTER, OtterRenderer::new);
+        registerEntityTypes();
+        RenderingRegistry.<EntityOtter>registerEntityRenderingHandler(OTTER, RendererOtter::new);
         EntitySpawnPlacementRegistry.register(OTTER, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::checkMobSpawnRules);
     }
@@ -80,25 +90,20 @@ public class OttercraftClient {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        registerEntityTypes();
         OTTER.setRegistryName(Ottercraft.OTTER_ID);
         event.getRegistry().register(OTTER);
     }
     
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
-        event.put(OTTER, Otter.createAttributes().build());
+        registerEntityTypes();
+        event.put(OTTER, EntityOtter.createAttributes().build());
     }
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
-        // This needs to be created here rather than in the registerEntities method,
-        // since the spawn eggs require the type to be defined, and items are created
-        // before entity types.
-        OTTER = new EntityType<>(Otter::new,
-                EntityClassification.AMBIENT.CREATURE, true,
-                true, false, false, ImmutableSet.of(),
-                EntitySize.fixed(0.9f, 1.0f), 4, 1);
-        
+        registerEntityTypes();
         Ottercraft.OTTER_SPAWN_EGG = new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(ItemGroup.TAB_MISC));
         Ottercraft.OTTER_SPAWN_EGG.setRegistryName(Ottercraft.OTTER_SPAWN_EGG_ID);
         event.getRegistry().register(Ottercraft.OTTER_SPAWN_EGG);
