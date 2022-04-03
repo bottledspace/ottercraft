@@ -29,16 +29,16 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static ca.otterspace.ottercraft.Ottercraft.OTTER;
-
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(Ottercraft.MODID)
-public class OttercraftClient {
+public class OttercraftCommon {
     public static final Logger LOGGER = LogManager.getLogger();
 
 
-    public OttercraftClient() {
+    public OttercraftCommon() {
+        LOGGER.info("init!");
+
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
@@ -47,9 +47,10 @@ public class OttercraftClient {
     }
     
     private static void registerEntityTypes() {
-        if (OTTER != null)
+        if (Ottercraft.OTTER != null)
             return;
-        OTTER = new EntityType<>(EntityOtter::new,
+        LOGGER.info("register Entity!");
+        Ottercraft.OTTER = new EntityType<>(EntityOtter::new,
             EntityClassification.AMBIENT.CREATURE, true,
             true, false, false, ImmutableSet.of(),
             EntitySize.fixed(0.9f, 1.0f), 4, 1);
@@ -61,8 +62,8 @@ public class OttercraftClient {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         registerEntityTypes();
-        RenderingRegistry.<EntityOtter>registerEntityRenderingHandler(OTTER, RendererOtter::new);
-        EntitySpawnPlacementRegistry.register(OTTER, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS,
+        RenderingRegistry.<EntityOtter>registerEntityRenderingHandler(Ottercraft.OTTER, RendererOtter::new);
+        EntitySpawnPlacementRegistry.register(Ottercraft.OTTER, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::checkMobSpawnRules);
     }
     
@@ -81,30 +82,30 @@ public class OttercraftClient {
             return;
         else if (biome.getBiomeCategory() == Biome.Category.RIVER)
             event.getSpawns().getSpawner(EntityClassification.AMBIENT.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
+                    .add(new MobSpawnInfo.Spawners(Ottercraft.OTTER, 200, 3, 5));
         else if (biome.getBiomeCategory() == Biome.Category.SWAMP)
             event.getSpawns().getSpawner(EntityClassification.AMBIENT.CREATURE)
-                    .add(new MobSpawnInfo.Spawners(OTTER, 200, 3, 5));
+                    .add(new MobSpawnInfo.Spawners(Ottercraft.OTTER, 200, 3, 5));
     }
 
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         registerEntityTypes();
-        OTTER.setRegistryName(Ottercraft.OTTER_ID);
-        event.getRegistry().register(OTTER);
+        Ottercraft.OTTER.setRegistryName(Ottercraft.OTTER_ID);
+        event.getRegistry().register(Ottercraft.OTTER);
     }
     
     @SubscribeEvent
     public static void attributeCreationEvent(EntityAttributeCreationEvent event) {
         registerEntityTypes();
-        event.put(OTTER, EntityOtter.createAttributes().build());
+        event.put(Ottercraft.OTTER, EntityOtter.createAttributes().build());
     }
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
         registerEntityTypes();
-        Ottercraft.OTTER_SPAWN_EGG = new SpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(ItemGroup.TAB_MISC));
+        Ottercraft.OTTER_SPAWN_EGG = new SpawnEggItem(Ottercraft.OTTER, 0x996633, 0x663300, new Item.Properties().tab(ItemGroup.TAB_MISC));
         Ottercraft.OTTER_SPAWN_EGG.setRegistryName(Ottercraft.OTTER_SPAWN_EGG_ID);
         event.getRegistry().register(Ottercraft.OTTER_SPAWN_EGG);
     }

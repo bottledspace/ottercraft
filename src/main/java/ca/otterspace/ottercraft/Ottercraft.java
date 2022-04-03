@@ -21,7 +21,7 @@ public class Ottercraft {
     public static SoundEvent OTTER_SQUEAK = new SoundEvent(OTTER_SQUEAK_ID);
     public static SoundEvent OTTER_ANGRY = new SoundEvent(OTTER_ANGRY_ID);
     
-    public static EntityType<EntityOtter> OTTER;
+    public static EntityType<EntityOtter> OTTER = null;
     
     public static SpawnEggItem OTTER_SPAWN_EGG;
 }
