@@ -1,0 +1,17 @@
+{
+  "otter_squeak": {
+    "category": "neutral",
+    "sounds": [
+      { "name": "ottercraft:otter_squeak_0" },
+      { "name": "ottercraft:otter_squeak_1" }
+    ],
+    "subtitle": "ottercraft.sound.subtitle.otter_squeak"
+  },
+  "otter_angry": {
+    "category": "neutral",
+    "sounds": [
+      { "name": "ottercraft:otter_angry_0" }
+    ],
+    "subtitle": "ottercraft.sound.subtitle.otter_angry"
+  }
+}
