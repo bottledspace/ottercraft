@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class OtterModel extends EntityModel<Otter> {
-    final Animations animations = Animations.loadAnimations(new ResourceLocation(Ottercraft.MODID, "animations/otter.animation.json"));
-    final Model model = Model.loadGeometry(new ResourceLocation(Ottercraft.MODID, "geo/otter.geo.json"));
+    final Animations animations = Animations.loadAnimations(new ResourceLocation(OttercraftCommon.MODID, "animations/otter.animation.json"));
+    final Model model = Model.loadGeometry(new ResourceLocation(OttercraftCommon.MODID, "geo/otter.geo.json"));
     
     final Bone root = model.getBone("root");
     final Bone head = model.getBone("head");

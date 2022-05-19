@@ -403,17 +403,17 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     
     @Override
     protected SoundEvent getAmbientSound() {
-        return Ottercraft.OTTER_SQUEAK;
+        return OttercraftCommon.OTTER_SQUEAK;
     }
     
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return Ottercraft.OTTER_ANGRY;
+        return OttercraftCommon.OTTER_ANGRY;
     }
     
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
-        Otter otter = Ottercraft.OTTER.create(world);
+        Otter otter = OttercraftCommon.OTTER.get().create(world);
         
         // If either parent is owned by a player, they own the offspring
         for (LivingEntity parentEntity : ImmutableList.of(this, parent)) {

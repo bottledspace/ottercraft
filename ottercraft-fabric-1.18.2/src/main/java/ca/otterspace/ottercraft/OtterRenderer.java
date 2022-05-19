@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class OtterRenderer extends MobRenderer<Otter,OtterModel> {
-    static final ResourceLocation OTTER_TEXTURE_LOCATION = new ResourceLocation(Ottercraft.MODID, "textures/entity/otter.png");
+    static final ResourceLocation OTTER_TEXTURE_LOCATION = new ResourceLocation(OttercraftCommon.MODID, "textures/entity/otter.png");
     
     public OtterRenderer(EntityRendererProvider.Context context) {
         super(context, new OtterModel(), 0.5f);

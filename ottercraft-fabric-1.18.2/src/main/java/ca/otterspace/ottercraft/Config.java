@@ -46,7 +46,7 @@ public class Config {
     }
     
     static {
-        Path source = FabricLoader.getInstance().getConfigDir().resolve(Ottercraft.MODID + ".properties");
+        Path source = FabricLoader.getInstance().getConfigDir().resolve(OttercraftCommon.MODID + ".properties");
         if (!tryRead(source)) {
             tryWrite(source);
             tryRead(source);
