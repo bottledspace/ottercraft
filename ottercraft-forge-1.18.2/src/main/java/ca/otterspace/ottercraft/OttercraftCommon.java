@@ -42,12 +42,12 @@ public class OttercraftCommon {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "ottercraft";
 
-    public static ResourceLocation OTTER_SQUEAK_ID = new ResourceLocation(MODID, "otter_squeak");
-    public static ResourceLocation OTTER_ANGRY_ID = new ResourceLocation(MODID, "otter_angry");
-    public static ResourceLocation OTTER_ID = new ResourceLocation(MODID, "otter");
+    public static final ResourceLocation OTTER_SQUEAK_ID = new ResourceLocation(MODID, "otter_squeak");
+    public static final ResourceLocation OTTER_ANGRY_ID = new ResourceLocation(MODID, "otter_angry");
+    public static final ResourceLocation OTTER_ID = new ResourceLocation(MODID, "otter");
 
-    public static SoundEvent OTTER_SQUEAK = new SoundEvent(OTTER_SQUEAK_ID);
-    public static SoundEvent OTTER_ANGRY = new SoundEvent(OTTER_ANGRY_ID);
+    public static final SoundEvent OTTER_SQUEAK = new SoundEvent(OTTER_SQUEAK_ID);
+    public static final SoundEvent OTTER_ANGRY = new SoundEvent(OTTER_ANGRY_ID);
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
@@ -57,7 +57,6 @@ public class OttercraftCommon {
                     .sized(1.0f, 1.0f)
                     .build(OTTER_ID.toString()));
 
-
     public OttercraftCommon() {
         ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, Config.COMMON_SPEC);
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -65,12 +64,12 @@ public class OttercraftCommon {
     }
     
     @SubscribeEvent
-    public static void setup(final FMLCommonSetupEvent event) {
+    public static void commonSetup(final FMLCommonSetupEvent event) {
     
     }
     
     @SubscribeEvent
-    public static void doClientStuff(final FMLClientSetupEvent event) {
+    public static void clientSetup(final FMLClientSetupEvent event) {
         EntityRenderers.register(OTTER.get(), OtterRenderer::new);
     }
     
@@ -83,7 +82,7 @@ public class OttercraftCommon {
     }
 
     @SubscribeEvent
-    public void onBiomesLoad(BiomeLoadingEvent event) {
+    public void loadBiome(BiomeLoadingEvent event) {
         if (event.getName() == null)
             return; // Apparently this is a possibility!
         if (Arrays.asList(Config.COMMON.otterSpawnBiomes.get().split(",")).contains(event.getName().toString()))
@@ -95,15 +94,15 @@ public class OttercraftCommon {
     }
     
     @SubscribeEvent
-    public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
+    public static void createAttributes(final EntityAttributeCreationEvent event) {
         event.put(OTTER.get(), Otter.createAttributes().build());
         SpawnPlacements.register(OTTER.get(), SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkMobSpawnRules);
     }
     
     @SubscribeEvent
-    public static void registerItem(final RegistryEvent.Register<Item> event) {
-        // Spawn eggs are special and don't use deferred registry
+    public static void registerItems(final RegistryEvent.Register<Item> event) {
+        // Spawn eggs require entities and don't use deferred registry
         event.getRegistry().register(new ForgeSpawnEggItem(OTTER, 0x996633, 0x663300, new Item.Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("ottercraft:spawn_egg_otter"));
     }
 }
