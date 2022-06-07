@@ -47,11 +47,10 @@ public class OttercraftCommon implements ModInitializer {
         FabricDefaultAttributeRegistry.register(OTTER, Otter.createAttributes());
         BiomeModifications.addSpawn((BiomeSelectionContext bsc) -> {
             Biome biome = bsc.getBiome();
-            if (biome != null) {
-                return Arrays.asList(Config.otterSpawnBiomes.split(","))
-                        .contains(bsc.getBiomeKey().location());
-            } else
+            if (biome == null)
                 return false;
+            return Arrays.stream(Config.otterSpawnBiomes.split(","))
+                    .anyMatch(bsc.getBiomeKey().location().toString()::equals);
         }, MobCategory.CREATURE, OTTER, Config.otterSpawnWeight, Config.otterSpawnMin, Config.otterSpawnMax);
 
         Registry.register(Registry.ITEM, OTTER_SPAWN_EGG_ID, OTTER_SPAWN_EGG);
