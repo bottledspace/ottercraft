@@ -54,5 +54,7 @@ public class OttercraftCommon implements ModInitializer {
         }, MobCategory.CREATURE, OTTER, Config.otterSpawnWeight, Config.otterSpawnMin, Config.otterSpawnMax);
 
         Registry.register(Registry.ITEM, OTTER_SPAWN_EGG_ID, OTTER_SPAWN_EGG);
+        Registry.register(Registry.SOUND_EVENT, OTTER_SQUEAK_ID, OTTER_SQUEAK);
+        Registry.register(Registry.SOUND_EVENT, OTTER_ANGRY_ID, OTTER_ANGRY);
     }
 }
