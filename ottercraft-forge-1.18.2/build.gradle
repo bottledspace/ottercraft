@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.1.11'
+version = '1.1.12'
 group = 'ca.otterspace.ottercraft' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ottercraft-forge'
 
@@ -179,7 +179,7 @@ jar {
         attributes([
                 "Specification-Title"     : "ottercraft",
                 "Specification-Vendor"    : "otterspace",
-                "Specification-Version"   : "1.1.11", // We are version 1 of ourselves
+                "Specification-Version"   : "1.1.12",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "otterspace",
