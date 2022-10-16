@@ -39,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     implementation(include('org.tomlj:tomlj:1.0.0'))
-	implementation(include('org.antlr:antlr4-runtime:4.7.2'))
+	implementation(include('org.antlr:antlr4-runtime:4.11.1'))
 }
 
 processResources {
