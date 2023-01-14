@@ -9,7 +9,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -404,17 +403,17 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     
     @Override
     protected SoundEvent getAmbientSound() {
-        return OttercraftCommon.OTTER_SQUEAK.get();
+        return Ottercraft.OTTER_SQUEAK.get();
     }
     
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return OttercraftCommon.OTTER_ANGRY.get();
+        return Ottercraft.OTTER_ANGRY.get();
     }
     
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob parent) {
-        Otter otter = OttercraftCommon.OTTER.get().create(world);
+        Otter otter = Ottercraft.OTTER.get().create(world);
         
         // If either parent is owned by a player, they own the offspring
         for (LivingEntity parentEntity : ImmutableList.of(this, parent)) {

@@ -6,7 +6,6 @@ import ca.otterspace.skeletal.Model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import net.minecraft.client.Minecraft;
@@ -15,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class OtterModel extends EntityModel<Otter> {
-    final Animations animations = Animations.loadAnimations(new ResourceLocation(OttercraftCommon.MODID, "animations/otter.animation.json"));
-    final Model model = Model.loadGeometry(new ResourceLocation(OttercraftCommon.MODID, "geo/otter.geo.json"));
+    final Animations animations = Animations.loadAnimations(new ResourceLocation(Ottercraft.MODID, "animations/otter.animation.json"));
+    final Model model = Model.loadGeometry(new ResourceLocation(Ottercraft.MODID, "geo/otter.geo.json"));
     
     final Bone root = model.getBone("root");
     final Bone head = model.getBone("head");

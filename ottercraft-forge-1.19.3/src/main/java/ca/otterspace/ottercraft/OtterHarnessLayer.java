@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 
 public class OtterHarnessLayer extends RenderLayer<Otter,OtterModel> {
-    static final ResourceLocation OTTER_HARNESS_LOCATION = new ResourceLocation(OttercraftCommon.MODID, "textures/entity/otter_harness.png");
+    static final ResourceLocation OTTER_HARNESS_LOCATION = new ResourceLocation(Ottercraft.MODID, "textures/entity/otter_harness.png");
     
     public OtterHarnessLayer(RenderLayerParent<Otter, OtterModel> $$0) {
         super($$0);
