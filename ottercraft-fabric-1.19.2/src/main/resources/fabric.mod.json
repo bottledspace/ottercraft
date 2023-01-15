@@ -1,0 +1,36 @@
+{
+    "schemaVersion": 1,
+    "id": "ottercraft",
+    "version": "${version}",
+  
+    "name": "Ottercraft",
+    "description": "Otters in Minecraft!",
+    "authors": [
+      "Astronotter"
+    ],
+    "contact": {
+      "homepage": "https://www.curseforge.com/minecraft/mc-mods/ottercraft",
+      "sources": "https://github.com/astronotter/ottercraft"
+    },
+  
+    "license": "CC0-1.0",
+    "icon": "assets/ottercraft/ottercraft.png",
+  
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "ca.otterspace.ottercraft.OttercraftCommon"
+      ],
+      "client": [
+        "ca.otterspace.ottercraft.OttercraftClient"
+      ]
+    },
+  
+    "depends": {
+      "fabricloader": ">=0.12",
+      "fabric": "*",
+      "minecraft": "1.19.x",
+      "java": ">=17"
+    }
+  }
+  
