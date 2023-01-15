@@ -49,9 +49,12 @@ public class OttercraftCommon implements ModInitializer {
             Biome biome = bsc.getBiome();
             if (biome == null)
                 return false;
-            return Arrays.stream(Config.otterSpawnBiomes.split(","))
+            return Arrays.stream(OttercraftConfig.otterSpawnBiomes.split(","))
                     .anyMatch(bsc.getBiomeKey().location().toString()::equals);
-        }, MobCategory.CREATURE, OTTER, Config.otterSpawnWeight, Config.otterSpawnMin, Config.otterSpawnMax);
+        }, MobCategory.CREATURE, OTTER,
+           OttercraftConfig.otterSpawnWeight,
+           OttercraftConfig.otterSpawnMin,
+           OttercraftConfig.otterSpawnMax);
 
         Registry.register(Registry.ITEM, OTTER_SPAWN_EGG_ID, OTTER_SPAWN_EGG);
         Registry.register(Registry.SOUND_EVENT, OTTER_SQUEAK_ID, OTTER_SQUEAK);
