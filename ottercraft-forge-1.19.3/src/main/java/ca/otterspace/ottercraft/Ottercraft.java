@@ -48,7 +48,6 @@ public class Ottercraft {
 
 
     public Ottercraft() {
-        ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, Config.COMMON_SPEC);
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
