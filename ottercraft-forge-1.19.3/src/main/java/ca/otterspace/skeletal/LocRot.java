@@ -28,7 +28,8 @@ public class LocRot {
         LocRot result = new LocRot();
         result.offset = new Vector3f(a.offset);
         result.offset.lerp(b.offset, t);
-        result.rotation = Util.slerp(a.rotation,b.rotation,t);
+        result.rotation = new Quaternionf(a.rotation);
+        result.rotation.slerp(b.rotation, t);
         return result;
     }
 }
