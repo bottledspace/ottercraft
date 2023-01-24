@@ -8,6 +8,12 @@ Please see the [Curseforge page](https://www.curseforge.com/minecraft/mc-mods/ot
 ![Preview of Minecraft Otter Running](https://thumbs.gfycat.com/SecretBaggyFlies.webp)
 
 
+Configuration
+-------------
+
+To configure the rate of spawn, and the biomes in which otters can spawn, modify the configuration file found in `config/ottercraft.json` for all versions of Fabric, and `config/ottercraft-common.toml` for Forge 1.18.x. Forge 1.19.x uses per-world configuration instead, through the use of datapacks.
+
+
 Special Thanks
 --------------
 - [Quicksounds](https://quicksounds.com) for the original otter noises.
