@@ -9,9 +9,9 @@ import java.nio.file.Path;
 
 public class OttercraftConfig {
     public static String otterSpawnBiomes = "minecraft:river,minecraft:swamp";
-    public static int otterSpawnWeight = 200;
-    public static int otterSpawnMin = 3;
-    public static int otterSpawnMax = 5;
+    public static int otterSpawnWeight = 100;
+    public static int otterSpawnMin = 2;
+    public static int otterSpawnMax = 3;
     
     static private boolean tryRead(Path source) {
         try {

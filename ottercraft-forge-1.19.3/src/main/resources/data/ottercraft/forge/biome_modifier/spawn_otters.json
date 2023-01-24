@@ -4,8 +4,8 @@
   "spawners":
   {
     "type": "ottercraft:otter", // Type of mob to spawn
-    "weight": 200, // int, spawn weighting
-    "minCount": 3, // int, minimum pack size
-    "maxCount": 5 // int, maximum pack size
+    "weight": 100, // int, spawn weighting
+    "minCount": 2, // int, minimum pack size
+    "maxCount": 3 // int, maximum pack size
   }
 }

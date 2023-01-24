@@ -15,11 +15,11 @@ public class Config {
             this.otterSpawnBiomes = builder.worldRestart()
                     .define("otterSpawnBiomes", "minecraft:swamp,minecraft:river");
             this.otterSpawnWeight = builder.worldRestart()
-                    .define("otterSpawnRate", 200);
+                    .define("otterSpawnRate", 100);
             this.otterSpawnMin = builder.worldRestart()
-                    .define("otterSpawnMin", 3);
+                    .define("otterSpawnMin", 2);
             this.otterSpawnMax = builder.worldRestart()
-                    .define("otterSpawnMax", 5);
+                    .define("otterSpawnMax", 3);
             builder.pop();
         }
     }

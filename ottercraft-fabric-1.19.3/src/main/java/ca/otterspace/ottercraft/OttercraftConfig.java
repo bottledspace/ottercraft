@@ -34,7 +34,7 @@ public class OttercraftConfig {
     private static boolean tryWrite(Path source) {
         try {
             PrintWriter writer = new PrintWriter(source.toFile(), "UTF-8");
-            writer.write("{\n\"otterSpawnBiomes\":\"minecraft:river,minecraft:swamp\",\n\"otterSpawnWeight\":200,\n\"otterSpawnMin\":3,\n\"otterSpawnMax\":5\n}");
+            writer.write("{\n\"otterSpawnBiomes\":\"minecraft:river,minecraft:swamp\",\n\"otterSpawnWeight\":100,\n\"otterSpawnMin\":2,\n\"otterSpawnMax\":3\n}");
             writer.close();
             return true;
         } catch (FileNotFoundException e) {
