@@ -1,0 +1,11 @@
+{
+  "type": "forge:add_spawns", // Required
+  "biomes": ["minecraft:swamp","minecraft:river"], // Accepts a biome id, [list of biome ids], or #namespace:biome_tag
+  "spawners":
+  {
+    "type": "ottercraft:otter", // Type of mob to spawn
+    "weight": 100, // int, spawn weighting
+    "minCount": 2, // int, minimum pack size
+    "maxCount": 3 // int, maximum pack size
+  }
+}
