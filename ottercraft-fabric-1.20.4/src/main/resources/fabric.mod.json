@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "ottercraft",
+	"version": "${version}",
+	"name": "Ottercraft",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/ottercraft/ottercraft.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"ca.otterspace.ottercraft.OttercraftCommon"
+		],
+		"client": [
+			"ca.otterspace.ottercraft.OttercraftClient"
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.15.1",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
