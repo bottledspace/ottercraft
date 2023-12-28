@@ -72,7 +72,7 @@ public class GoalLeaveWater extends Goal {
                     Mth.floor(vector3d.x - 2.0D), Mth.floor(vector3d.y - 1.0D),
                     Mth.floor(vector3d.z - 2.0D), Mth.floor(vector3d.x + 2.0D),
                     Mth.floor(vector3d.y), Mth.floor(vector3d.z + 2.0D))) {
-                if (this.creature.level.getFluidState(blockpos1).is(FluidTags.WATER)) {
+                if (this.creature.level().getFluidState(blockpos1).is(FluidTags.WATER)) {
                     waterDetected = true;
                     break;
                 }
@@ -80,7 +80,7 @@ public class GoalLeaveWater extends Goal {
             if(waterDetected){
                 vector3d = LandRandomPos.getPos(this.creature, 23, 7);
             }else{
-                return new BlockPos(vector3d);
+                return new BlockPos((int)vector3d.x, (int)vector3d.y, (int)vector3d.z);
             }
             tries++;
         }

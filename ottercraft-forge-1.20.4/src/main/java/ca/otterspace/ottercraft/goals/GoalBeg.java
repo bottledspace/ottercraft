@@ -22,7 +22,7 @@ public class GoalBeg<E extends TamableAnimal & IBegger>  extends Goal {
 
     public GoalBeg(E p_i1617_1_, float p_i1617_2_) {
         this.otter = p_i1617_1_;
-        this.level = p_i1617_1_.level;
+        this.level = p_i1617_1_.level();
         this.lookDistance = p_i1617_2_;
         this.begTargeting = TargetingConditions.forNonCombat().range((double)p_i1617_2_);
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

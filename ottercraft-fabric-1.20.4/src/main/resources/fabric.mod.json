@@ -5,7 +5,7 @@
 	"name": "Ottercraft",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"bottledspace"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
@@ -30,6 +30,5 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
 	}
 }

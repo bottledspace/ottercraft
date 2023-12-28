@@ -109,8 +109,8 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         if (compound.contains("CollarColor", 99)) {
             this.setCollarColor(DyeColor.byId(compound.getInt("CollarColor")));
         }
-        if (!level.isClientSide)
-            this.readPersistentAngerSaveData(this.level, compound);
+        if (!level().isClientSide)
+            this.readPersistentAngerSaveData(this.level(), compound);
     }
     public DyeColor getCollarColor() {
         return DyeColor.byId(this.entityData.get(COLLAR_COLOR));
@@ -187,10 +187,10 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     protected boolean isLandNavigator;
     protected int swimTimer = 0;
     
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
+    //@Override
+    //public boolean canBreatheUnderwater() {
+    //    return true;
+    //}
     
     @Override
     public boolean isPushedByFluid() {
@@ -249,11 +249,11 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     
     private void switchNavigator(boolean onLand) {
         if (onLand) {
-            this.navigation = new GroundPathNavigation(this, this.level);
+            this.navigation = new GroundPathNavigation(this, this.level());
             this.moveControl = new MoveControl(this);
             this.isLandNavigator = true;
         } else {
-            this.navigation = new SemiAquaticPathNavigator(this, this.level);
+            this.navigation = new SemiAquaticPathNavigator(this, this.level());
             this.moveControl = new SwimMovementController(this,  2.5f, 1.6f);
             this.isLandNavigator = false;
         }
@@ -277,10 +277,15 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     public void tick() {
         super.tick();
         
-        if (this.isInWaterOrBubble() && this.isInSittingPose())
-            super.setOrderedToSit(false);
+        if (this.isInWaterOrBubble()) {
+            if (this.isInSittingPose())
+                super.setOrderedToSit(false);
+            // FIXME: A silly hack to ensure we don't drown
+            this.setAirSupply(this.getMaxAirSupply());
+        }
+
         
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.isInWater()) {
                 this.swimTimer++;
             } else {
@@ -291,11 +296,11 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
         if (this.isSwimming() && this.isLandNavigator) {
             switchNavigator(false);
         }
-        if (this.isOnGround() && !this.isLandNavigator) {
+        if (this.onGround() && !this.isLandNavigator) {
             switchNavigator(true);
         }
         
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.animationController != null) {
                 this.setAnimation();
                 this.animationController.tick();
@@ -306,8 +311,8 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level.isClientSide) {
-            this.updatePersistentAnger((ServerLevel) this.level, true);
+        if (!this.level().isClientSide) {
+            this.updatePersistentAnger((ServerLevel) this.level(), true);
         }
     }
     
@@ -387,7 +392,7 @@ public class Otter extends TamableAnimal implements ISemiAquatic, IBegger, Neutr
             this.setOrderedToSit(true);
     
             // Probably broadcasts that we are now tame?
-            this.level.broadcastEntityEvent(this, (byte)7);
+            this.level().broadcastEntityEvent(this, (byte)7);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

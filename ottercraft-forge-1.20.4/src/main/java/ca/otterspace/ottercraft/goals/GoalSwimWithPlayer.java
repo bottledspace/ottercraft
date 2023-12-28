@@ -22,7 +22,7 @@ public class GoalSwimWithPlayer extends Goal {
     }
 
     public boolean canUse() {
-        this.player = this.mob.level.getNearestPlayer(SWIM_WITH_PLAYER_TARGETING, this.mob);
+        this.player = this.mob.level().getNearestPlayer(SWIM_WITH_PLAYER_TARGETING, this.mob);
         if (this.player == null) {
             return false;
         } else {
@@ -51,7 +51,7 @@ public class GoalSwimWithPlayer extends Goal {
             this.mob.getNavigation().moveTo(this.player, this.speedModifier);
         }
 
-        if (this.player.isSwimming() && this.player.level.random.nextInt(6) == 0) {
+        if (this.player.isSwimming() && this.player.level().random.nextInt(6) == 0) {
             //this.player.addEffect(new EffectInstance(Effects.DOLPHINS_GRACE, 100));
         }
 

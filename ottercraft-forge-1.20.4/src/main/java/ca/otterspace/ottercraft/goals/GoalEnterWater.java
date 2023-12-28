@@ -22,7 +22,7 @@ public class GoalEnterWater extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.creature.isOnGround() && !this.creature.level.getFluidState(this.creature.blockPosition()).is(FluidTags.WATER)) {
+        if (this.creature.onGround() && !this.creature.level().getFluidState(this.creature.blockPosition()).is(FluidTags.WATER)) {
             if (this.creature instanceof ISemiAquatic && ((ISemiAquatic) this.creature).shouldEnterWater()
                     && (this.creature.getTarget() != null || this.creature.getRandom().nextInt(executionChance) == 0)) {
                 targetPos = generateTarget();
@@ -53,7 +53,7 @@ public class GoalEnterWater extends Goal {
             return false;
         }
         return !this.creature.getNavigation().isDone() && targetPos != null
-                && !this.creature.level.getFluidState(this.creature.blockPosition()).is(FluidTags.WATER);
+                && !this.creature.level().getFluidState(this.creature.blockPosition()).is(FluidTags.WATER);
     }
 
     public BlockPos generateTarget() {
@@ -62,10 +62,10 @@ public class GoalEnterWater extends Goal {
         int range = 14;
         for (int i = 0; i < 15; i++) {
             BlockPos blockpos1 = this.creature.blockPosition().offset(random.nextInt(range) - range/2, 3, random.nextInt(range) - range/2);
-            while (this.creature.level.isEmptyBlock(blockpos1) && blockpos1.getY() > 1) {
+            while (this.creature.level().isEmptyBlock(blockpos1) && blockpos1.getY() > 1) {
                 blockpos1 = blockpos1.below();
             }
-            if(this.creature.level.getFluidState(blockpos1).is(FluidTags.WATER)){
+            if(this.creature.level().getFluidState(blockpos1).is(FluidTags.WATER)){
                 blockpos = blockpos1;
             }
         }

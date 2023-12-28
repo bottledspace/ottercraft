@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.core.Direction;
 import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 public class Model {
     Map<String, Bone> boneMap = Maps.newHashMap();
@@ -96,7 +98,7 @@ public class Model {
                             -(rcube.origin[1] - rcube.pivot[1]) - rcube.size[1],
                             rcube.origin[2] - rcube.pivot[2],
                             rcube.size[0], rcube.size[1], rcube.size[2],
-                            0, 0, 0, false, 128f, 128f);
+                            0, 0, 0, false, 128f, 128f, Set.of(Direction.values()));
                     bone.children.add(leaf);
                 }
             }
