@@ -1,4 +1,4 @@
-We have moved, please see [the codeberg repository](https://codeberg.org/bottledspace) for the latest development!
+We have moved, please see [the codeberg repository](https://codeberg.org/bottledspace/ottercraft) for the latest development!
 
 Ottercraft
 ==========
