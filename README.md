@@ -1,3 +1,5 @@
+We have moved, please see [the codeberg repository](https://codeberg.org/bottledspace) for the latest development!
+
 Ottercraft
 ==========
 
